@@ -1,0 +1,143 @@
+import { Exercise } from '@/types';
+
+export const exercises: Exercise[] = [
+  {
+    id: 'jaw_release',
+    titleEn: 'Jaw Release',
+    titlePt: 'Liberação da Mandíbula',
+    descriptionEn: 'Gentle exercise to release jaw tension',
+    descriptionPt: 'Exercício suave para liberar a tensão da mandíbula',
+    duration: 20,
+    stepsEn: [
+      'Close your eyes and take a deep breath',
+      'Gently open your mouth as wide as comfortable',
+      'Hold for 5 seconds',
+      'Slowly close your mouth',
+      'Repeat 3 times',
+    ],
+    stepsPt: [
+      'Feche os olhos e respire profundamente',
+      'Abra suavemente a boca o máximo que for confortável',
+      'Segure por 5 segundos',
+      'Feche lentamente a boca',
+      'Repita 3 vezes',
+    ],
+    steps: [],
+    icon: '😮',
+    difficulty: 'easy',
+  },
+  {
+    id: 'tongue_rest',
+    titleEn: 'Tongue Resting Position',
+    titlePt: 'Posição de Repouso da Língua',
+    descriptionEn: 'Find the natural resting position for your tongue',
+    descriptionPt: 'Encontre a posição natural de repouso para sua língua',
+    duration: 15,
+    stepsEn: [
+      'Relax your jaw completely',
+      'Place tongue tip behind upper front teeth',
+      'Rest tongue flat against the roof of your mouth',
+      'Teeth should be slightly apart',
+      'Breathe naturally through your nose',
+    ],
+    stepsPt: [
+      'Relaxe completamente a mandíbula',
+      'Coloque a ponta da língua atrás dos dentes superiores',
+      'Deixe a língua plana contra o céu da boca',
+      'Os dentes devem ficar ligeiramente separados',
+      'Respire naturalmente pelo nariz',
+    ],
+    steps: [],
+    icon: '👅',
+    difficulty: 'easy',
+  },
+  {
+    id: 'breathing_reset',
+    titleEn: 'Breathing Reset',
+    titlePt: 'Reset Respiratório',
+    descriptionEn: 'Calm breathing to release facial tension',
+    descriptionPt: 'Respiração calma para liberar tensão facial',
+    duration: 30,
+    stepsEn: [
+      'Sit comfortably with good posture',
+      'Close your eyes gently',
+      'Inhale slowly through your nose for 4 counts',
+      'Hold for 2 counts',
+      'Exhale through your mouth for 6 counts',
+      'Repeat 5 times',
+    ],
+    stepsPt: [
+      'Sente-se confortavelmente com boa postura',
+      'Feche os olhos suavemente',
+      'Inspire lentamente pelo nariz por 4 contagens',
+      'Segure por 2 contagens',
+      'Expire pela boca por 6 contagens',
+      'Repita 5 vezes',
+    ],
+    steps: [],
+    icon: '🫁',
+    difficulty: 'easy',
+  },
+  {
+    id: 'jaw_massage',
+    titleEn: 'Jaw Massage',
+    titlePt: 'Massagem da Mandíbula',
+    descriptionEn: 'Self-massage to relieve jaw muscle tension',
+    descriptionPt: 'Auto-massagem para aliviar tensão muscular da mandíbula',
+    duration: 25,
+    stepsEn: [
+      'Place fingers on jaw muscles (below ears)',
+      'Apply gentle pressure in circular motions',
+      'Massage for 10 seconds on each side',
+      'Move down to chin area',
+      'Continue gentle circular massage',
+      'Finish with light tapping',
+    ],
+    stepsPt: [
+      'Coloque os dedos nos músculos da mandíbula (abaixo das orelhas)',
+      'Aplique pressão suave em movimentos circulares',
+      'Massageie por 10 segundos de cada lado',
+      'Mova para a área do queixo',
+      'Continue com massagem circular suave',
+      'Finalize com leves batidas',
+    ],
+    steps: [],
+    icon: '💆',
+    difficulty: 'medium',
+  },
+  {
+    id: 'posture_check',
+    titleEn: 'Posture Check',
+    titlePt: 'Verificação de Postura',
+    descriptionEn: 'Align your posture to reduce jaw tension',
+    descriptionPt: 'Alinhe sua postura para reduzir tensão da mandíbula',
+    duration: 15,
+    stepsEn: [
+      'Stand or sit up straight',
+      'Roll shoulders back and down',
+      'Align ears over shoulders',
+      'Relax neck muscles',
+      'Check that jaw is not clenched',
+      'Take 3 deep breaths',
+    ],
+    stepsPt: [
+      'Fique em pé ou sente-se ereto',
+      'Role os ombros para trás e para baixo',
+      'Alinhe as orelhas sobre os ombros',
+      'Relaxe os músculos do pescoço',
+      'Verifique se a mandíbula não está cerrada',
+      'Respire profundamente 3 vezes',
+    ],
+    steps: [],
+    icon: '🧍',
+    difficulty: 'easy',
+  },
+];
+
+export const getExercise = (id: string): Exercise | undefined => {
+  return exercises.find((ex) => ex.id === id);
+};
+
+export const getExercisesByDifficulty = (difficulty: 'easy' | 'medium' | 'hard'): Exercise[] => {
+  return exercises.filter((ex) => ex.difficulty === difficulty);
+};
