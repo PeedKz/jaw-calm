@@ -27,33 +27,36 @@ const AppRoutes = () => {
   // Handle daily goal celebration
   const { showCelebration, dismissCelebration } = useDailyGoalCelebration();
 
-  if (!isOnboardingCompleted) {
-    return (
-      <Routes>
-        <Route path="/onboarding" element={<Onboarding />} />
-        <Route path="*" element={<Navigate to="/onboarding" replace />} />
-      </Routes>
-    );
-  }
-
   return (
     <>
       <Routes>
-        <Route path="/" element={<Dashboard />} />
-        <Route path="/progress" element={<Progress />} />
-        <Route path="/rewards" element={<Rewards />} />
-        <Route path="/exercises" element={<Exercises />} />
-        <Route path="/exercises/:id" element={<ExerciseDetail />} />
-        <Route path="/settings" element={<Settings />} />
-        <Route path="*" element={<NotFound />} />
+        {!isOnboardingCompleted ? (
+          <>
+            <Route path="/onboarding" element={<Onboarding />} />
+            <Route path="*" element={<Navigate to="/onboarding" replace />} />
+          </>
+        ) : (
+          <>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/progress" element={<Progress />} />
+            <Route path="/rewards" element={<Rewards />} />
+            <Route path="/exercises" element={<Exercises />} />
+            <Route path="/exercises/:id" element={<ExerciseDetail />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="/onboarding" element={<Navigate to="/" replace />} />
+            <Route path="*" element={<NotFound />} />
+          </>
+        )}
       </Routes>
       
       {/* Daily Goal Celebration Modal */}
-      <DailyGoalAnimation 
-        show={showCelebration} 
-        onDismiss={dismissCelebration}
-        language={language}
-      />
+      {isOnboardingCompleted && (
+        <DailyGoalAnimation 
+          show={showCelebration} 
+          onDismiss={dismissCelebration}
+          language={language}
+        />
+      )}
     </>
   );
 };
