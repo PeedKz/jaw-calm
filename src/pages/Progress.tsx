@@ -2,18 +2,12 @@ import { motion } from 'framer-motion';
 import { BottomNav } from '@/components/BottomNav';
 import { useApp } from '@/contexts/AppContext';
 import { t } from '@/lib/translations';
-import { gamification } from '@/lib/gamification';
 import { TrendingUp, Calendar, Award } from 'lucide-react';
-import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from 'recharts';
+import { WeeklyCalendar } from '@/components/calendar/WeeklyCalendar';
+import { MonthlyCalendar } from '@/components/calendar/MonthlyCalendar';
 
 export default function Progress() {
   const { language, userProgress } = useApp();
-  const weeklyData = gamification.getWeeklyProgress();
-
-  const chartData = Object.entries(weeklyData).map(([day, count]) => ({
-    day,
-    count,
-  }));
 
   const stats = [
     {
@@ -81,60 +75,17 @@ export default function Progress() {
           className="card-soft"
         >
           <h2 className="text-lg font-semibold mb-4">{t('thisWeek', language)}</h2>
-          <ResponsiveContainer width="100%" height={200}>
-            <BarChart data={chartData}>
-              <XAxis
-                dataKey="day"
-                axisLine={false}
-                tickLine={false}
-                tick={{ fill: 'hsl(var(--muted-foreground))' }}
-              />
-              <YAxis hide />
-              <Bar dataKey="count" radius={[8, 8, 0, 0]}>
-                {chartData.map((entry, index) => (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={entry.count > 0 ? 'hsl(var(--primary))' : 'hsl(var(--muted))'}
-                  />
-                ))}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
+          <WeeklyCalendar language={language} />
         </motion.div>
 
-        {/* Streak Calendar Heatmap */}
+        {/* Monthly Calendar */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
           className="card-soft"
         >
-          <h2 className="text-lg font-semibold mb-4">
-            {language === 'pt' ? 'Atividade Recente' : 'Recent Activity'}
-          </h2>
-          <div className="grid grid-cols-7 gap-2">
-            {Array.from({ length: 28 }, (_, i) => {
-              const date = new Date();
-              date.setDate(date.getDate() - (27 - i));
-              const dayEntries = gamification.getEntriesInRange(
-                new Date(date.setHours(0, 0, 0, 0)),
-                new Date(date.setHours(23, 59, 59, 999))
-              );
-              const hasActivity = dayEntries.length > 0;
-
-              return (
-                <div
-                  key={i}
-                  className={`aspect-square rounded-lg transition-smooth ${
-                    hasActivity
-                      ? 'bg-gradient-to-br from-primary to-secondary'
-                      : 'bg-muted'
-                  }`}
-                  title={date.toLocaleDateString()}
-                />
-              );
-            })}
-          </div>
+          <MonthlyCalendar language={language} />
         </motion.div>
       </div>
 

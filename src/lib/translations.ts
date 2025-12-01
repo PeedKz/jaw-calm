@@ -76,6 +76,27 @@ export const translations = {
     unclench: 'Unclench. Breathe.',
     checkPosture: 'Check your posture',
     takeBreak: 'Time for a jaw break',
+    
+    // Reminder intervals
+    intervalLabel: 'Reminder Interval',
+    interval15: '15 minutes',
+    interval30: '30 minutes',
+    interval45: '45 minutes',
+    interval60: '1 hour',
+    interval90: '90 minutes',
+    interval120: '2 hours',
+    
+    // Daily goal celebration
+    dailyGoalComplete: 'Daily Goal Complete!',
+    dailyGoalMessage: 'Great job relaxing today!',
+    keepGoing: 'Keep Going',
+    
+    // Calendar
+    recentActivity: 'Recent Activity',
+    monthlyCalendar: 'Monthly Calendar',
+    previousMonth: 'Previous Month',
+    nextMonth: 'Next Month',
+    noActivity: 'No activity',
   },
   pt: {
     // Common
@@ -154,6 +175,27 @@ export const translations = {
     unclench: 'Solte a mordida. Respire.',
     checkPosture: 'Verifique sua postura',
     takeBreak: 'Hora de relaxar a mandíbula',
+    
+    // Reminder intervals
+    intervalLabel: 'Intervalo de Lembrete',
+    interval15: '15 minutos',
+    interval30: '30 minutos',
+    interval45: '45 minutos',
+    interval60: '1 hora',
+    interval90: '90 minutos',
+    interval120: '2 horas',
+    
+    // Daily goal celebration
+    dailyGoalComplete: 'Meta Diária Concluída!',
+    dailyGoalMessage: 'Ótimo trabalho relaxando hoje!',
+    keepGoing: 'Continuar',
+    
+    // Calendar
+    recentActivity: 'Atividade Recente',
+    monthlyCalendar: 'Calendário Mensal',
+    previousMonth: 'Mês Anterior',
+    nextMonth: 'Próximo Mês',
+    noActivity: 'Sem atividade',
   },
 };
 

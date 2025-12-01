@@ -12,11 +12,20 @@ import Exercises from "./pages/Exercises";
 import ExerciseDetail from "./pages/ExerciseDetail";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
+import { useRelaxationReminderTimer } from "./hooks/useRelaxationReminderTimer";
+import { useDailyGoalCelebration } from "./hooks/useDailyGoalCelebration";
+import { DailyGoalAnimation } from "./components/celebrations/DailyGoalAnimation";
 
 const queryClient = new QueryClient();
 
 const AppRoutes = () => {
-  const { isOnboardingCompleted } = useApp();
+  const { isOnboardingCompleted, language } = useApp();
+  
+  // Initialize reminder timer system
+  useRelaxationReminderTimer();
+  
+  // Handle daily goal celebration
+  const { showCelebration, dismissCelebration } = useDailyGoalCelebration();
 
   if (!isOnboardingCompleted) {
     return (
@@ -28,15 +37,24 @@ const AppRoutes = () => {
   }
 
   return (
-    <Routes>
-      <Route path="/" element={<Dashboard />} />
-      <Route path="/progress" element={<Progress />} />
-      <Route path="/rewards" element={<Rewards />} />
-      <Route path="/exercises" element={<Exercises />} />
-      <Route path="/exercises/:id" element={<ExerciseDetail />} />
-      <Route path="/settings" element={<Settings />} />
-      <Route path="*" element={<NotFound />} />
-    </Routes>
+    <>
+      <Routes>
+        <Route path="/" element={<Dashboard />} />
+        <Route path="/progress" element={<Progress />} />
+        <Route path="/rewards" element={<Rewards />} />
+        <Route path="/exercises" element={<Exercises />} />
+        <Route path="/exercises/:id" element={<ExerciseDetail />} />
+        <Route path="/settings" element={<Settings />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+      
+      {/* Daily Goal Celebration Modal */}
+      <DailyGoalAnimation 
+        show={showCelebration} 
+        onDismiss={dismissCelebration}
+        language={language}
+      />
+    </>
   );
 };
 
