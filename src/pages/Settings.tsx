@@ -2,17 +2,26 @@ import { motion } from 'framer-motion';
 import { BottomNav } from '@/components/BottomNav';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
-import { Slider } from '@/components/ui/slider';
 import { useApp } from '@/contexts/AppContext';
 import { t } from '@/lib/translations';
 import { Settings as SettingsIcon, Bell, Globe, Info } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 export default function Settings() {
   const { language, setLanguage, reminders, setReminders } = useApp();
 
-  const handleFrequencyChange = ([value]: number[]) => {
-    setReminders({ ...reminders, frequency: value });
+  const handleFrequencyChange = (value: string) => {
+    setReminders({ ...reminders, frequency: parseInt(value, 10) });
   };
+
+  const intervalOptions = [
+    { value: '15', label: t('interval15', language) },
+    { value: '30', label: t('interval30', language) },
+    { value: '45', label: t('interval45', language) },
+    { value: '60', label: t('interval60', language) },
+    { value: '90', label: t('interval90', language) },
+    { value: '120', label: t('interval120', language) },
+  ];
 
   return (
     <div className="min-h-screen bg-background pb-24">
@@ -70,24 +79,26 @@ export default function Settings() {
           </div>
 
           <div className="space-y-6">
-            {/* Reminder Frequency */}
+            {/* Reminder Interval */}
             <div>
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-sm text-muted-foreground">
-                  {t('reminderFrequency', language)}
-                </span>
-                <span className="text-sm font-medium">
-                  {t('every', language)} {reminders.frequency} {t('minutes', language)}
-                </span>
-              </div>
-              <Slider
-                value={[reminders.frequency]}
+              <label className="text-sm text-muted-foreground block mb-3">
+                {t('intervalLabel', language)}
+              </label>
+              <Select
+                value={reminders.frequency.toString()}
                 onValueChange={handleFrequencyChange}
-                min={30}
-                max={240}
-                step={30}
-                className="w-full"
-              />
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {intervalOptions.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             {/* Sound Toggle */}

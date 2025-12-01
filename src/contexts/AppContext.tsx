@@ -4,6 +4,8 @@ import { storage } from '@/lib/storage';
 import { gamification } from '@/lib/gamification';
 import { Language } from '@/lib/translations';
 
+const LAST_RELAXATION_TIME_KEY = 'bruxism_last_relaxation_time';
+
 interface AppContextType {
   userProfile: UserProfile | null;
   setUserProfile: (profile: UserProfile) => void;
@@ -71,6 +73,9 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     
     storage.addHabitEntry(entry);
     gamification.updateStreak();
+    
+    // Update last relaxation time for reminder timer
+    localStorage.setItem(LAST_RELAXATION_TIME_KEY, Date.now().toString());
     
     // Refresh state
     setUserProgressState(storage.getUserProgress());
