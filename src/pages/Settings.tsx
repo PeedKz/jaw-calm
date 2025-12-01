@@ -4,14 +4,35 @@ import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { useApp } from '@/contexts/AppContext';
 import { t } from '@/lib/translations';
-import { Settings as SettingsIcon, Bell, Globe, Info } from 'lucide-react';
+import { Settings as SettingsIcon, Bell, Globe, Info, RotateCcw } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
+import { useNavigate } from 'react-router-dom';
+import { storage } from '@/lib/storage';
 
 export default function Settings() {
   const { language, setLanguage, reminders, setReminders } = useApp();
+  const navigate = useNavigate();
 
   const handleFrequencyChange = (value: string) => {
     setReminders({ ...reminders, frequency: parseInt(value, 10) });
+  };
+
+  const handleResetOnboarding = () => {
+    // Clear only the onboarding completion flag
+    localStorage.removeItem('bruxism_onboarding_completed');
+    // Navigate to onboarding
+    navigate('/onboarding');
   };
 
   const intervalOptions = [
@@ -132,11 +153,49 @@ export default function Settings() {
           </div>
         </motion.div>
 
-        {/* About */}
+        {/* Reset Onboarding */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
+          className="card-soft"
+        >
+          <div className="flex items-center gap-3 mb-3">
+            <RotateCcw className="w-5 h-5 text-primary" />
+            <h2 className="text-lg font-semibold">{t('resetOnboarding', language)}</h2>
+          </div>
+          <p className="text-sm text-muted-foreground leading-relaxed mb-4">
+            {t('resetOnboardingDesc', language)}
+          </p>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="outline" className="w-full">
+                <RotateCcw className="w-4 h-4 mr-2" />
+                {t('resetOnboardingButton', language)}
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>{t('resetOnboardingConfirmTitle', language)}</AlertDialogTitle>
+                <AlertDialogDescription>
+                  {t('resetOnboardingConfirmDesc', language)}
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>{t('cancel', language)}</AlertDialogCancel>
+                <AlertDialogAction onClick={handleResetOnboarding}>
+                  {t('confirm', language)}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </motion.div>
+
+        {/* About */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
           className="card-soft"
         >
           <div className="flex items-center gap-3 mb-3">

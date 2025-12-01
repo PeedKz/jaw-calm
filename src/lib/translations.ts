@@ -70,6 +70,12 @@ export const translations = {
     language: 'Language',
     darkMode: 'Dark Mode',
     about: 'About',
+    resetOnboarding: 'Reset Onboarding',
+    resetOnboardingDesc: 'Go through the onboarding process again to update your profile and preferences',
+    resetOnboardingButton: 'Reset',
+    resetOnboardingConfirmTitle: 'Reset Onboarding?',
+    resetOnboardingConfirmDesc: 'This will take you back to the onboarding screens. Your progress and achievements will be kept.',
+    confirm: 'Confirm',
     
     // Notifications (default messages)
     relaxJaw: 'Relax your jaw 😊',
@@ -169,6 +175,12 @@ export const translations = {
     language: 'Idioma',
     darkMode: 'Modo Escuro',
     about: 'Sobre',
+    resetOnboarding: 'Redefinir Integração',
+    resetOnboardingDesc: 'Passe pelo processo de integração novamente para atualizar seu perfil e preferências',
+    resetOnboardingButton: 'Redefinir',
+    resetOnboardingConfirmTitle: 'Redefinir Integração?',
+    resetOnboardingConfirmDesc: 'Isso levará você de volta às telas de integração. Seu progresso e conquistas serão mantidos.',
+    confirm: 'Confirmar',
     
     // Notifications (default messages)
     relaxJaw: 'Relaxe a mandíbula 😊',
