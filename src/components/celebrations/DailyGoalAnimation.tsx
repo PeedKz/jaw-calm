@@ -30,8 +30,9 @@ export const DailyGoalAnimation = ({ show, onDismiss, language }: DailyGoalAnima
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.8, y: 20 }}
             transition={{ type: 'spring', duration: 0.6 }}
-            className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-[90%] max-w-md"
+            className="fixed inset-0 z-50 flex items-center justify-center p-6"
           >
+            <div className="w-full max-w-md">
             <div className="card-soft relative overflow-hidden">
               {/* Animated particles */}
               {[...Array(12)].map((_, i) => (
@@ -135,6 +136,7 @@ export const DailyGoalAnimation = ({ show, onDismiss, language }: DailyGoalAnima
                   </Button>
                 </motion.div>
               </div>
+            </div>
             </div>
           </motion.div>
         </>
