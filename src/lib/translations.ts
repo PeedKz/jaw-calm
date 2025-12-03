@@ -83,6 +83,11 @@ export const translations = {
     checkPosture: 'Check your posture',
     takeBreak: 'Time for a jaw break',
     
+    // Reminder popup
+    reminderPopupTitle: 'Time to relax your jaw',
+    reminderPopupMessage: 'Take a few seconds to unclench and breathe.',
+    dismiss: 'Dismiss',
+    
     // Reminder intervals
     intervalLabel: 'Reminder Interval',
     interval15: '15 minutes',
@@ -187,6 +192,11 @@ export const translations = {
     unclench: 'Solte a mordida. Respire.',
     checkPosture: 'Verifique sua postura',
     takeBreak: 'Hora de relaxar a mandíbula',
+    
+    // Reminder popup
+    reminderPopupTitle: 'Hora de relaxar a mandíbula',
+    reminderPopupMessage: 'Reserve alguns segundos para soltar a mordida e respirar.',
+    dismiss: 'Dispensar',
     
     // Reminder intervals
     intervalLabel: 'Intervalo de Lembrete',

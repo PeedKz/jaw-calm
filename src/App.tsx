@@ -12,17 +12,18 @@ import Exercises from "./pages/Exercises";
 import ExerciseDetail from "./pages/ExerciseDetail";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
-import { useRelaxationReminderTimer } from "./hooks/useRelaxationReminderTimer";
+import { useRelaxationPopupTrigger } from "./hooks/useRelaxationPopupTrigger";
 import { useDailyGoalCelebration } from "./hooks/useDailyGoalCelebration";
 import { DailyGoalAnimation } from "./components/celebrations/DailyGoalAnimation";
+import { RelaxationReminderPopup } from "./components/notifications/RelaxationReminderPopup";
 
 const queryClient = new QueryClient();
 
 const AppRoutes = () => {
   const { isOnboardingCompleted, language } = useApp();
   
-  // Initialize reminder timer system
-  useRelaxationReminderTimer();
+  // Initialize relaxation popup trigger system
+  const { isPopupOpen, handleDismiss, handleStartExercise } = useRelaxationPopupTrigger();
   
   // Handle daily goal celebration
   const { showCelebration, dismissCelebration } = useDailyGoalCelebration();
@@ -48,6 +49,15 @@ const AppRoutes = () => {
           </>
         )}
       </Routes>
+      
+      {/* Relaxation Reminder Popup */}
+      {isOnboardingCompleted && (
+        <RelaxationReminderPopup
+          isOpen={isPopupOpen}
+          onDismiss={handleDismiss}
+          onStartExercise={handleStartExercise}
+        />
+      )}
       
       {/* Daily Goal Celebration Modal */}
       {isOnboardingCompleted && (
