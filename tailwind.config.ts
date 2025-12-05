@@ -43,6 +43,11 @@ export default {
         warning: {
           DEFAULT: "hsl(var(--warning))",
         },
+        urgency: {
+          DEFAULT: "hsl(var(--urgency))",
+          foreground: "hsl(var(--urgency-foreground))",
+          light: "hsl(var(--urgency-light))",
+        },
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
           foreground: "hsl(var(--destructive-foreground))",
