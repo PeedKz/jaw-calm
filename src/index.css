@@ -81,28 +81,43 @@
   }
 
   .dark {
-    --background: 215 25% 12%;
-    --foreground: 200 15% 90%;
+    /* Slate 900 background as specified */
+    --background: 222 47% 11%;
+    --foreground: 214 32% 91%;
     
-    --card: 215 20% 16%;
-    --card-foreground: 200 15% 90%;
+    --card: 222 40% 14%;
+    --card-foreground: 214 32% 91%;
     
-    --primary: 190 75% 55%;
-    --primary-foreground: 215 25% 12%;
+    /* Calming blue adapted for dark: #38BDF8 */
+    --primary: 199 89% 60%;
+    --primary-foreground: 222 47% 11%;
+    --primary-light: 199 80% 70%;
+    --primary-glow: 199 89% 70%;
     
-    --secondary: 260 35% 45%;
-    --secondary-foreground: 200 15% 90%;
+    /* Medical purple for dark: #7C3AED */
+    --secondary: 263 70% 58%;
+    --secondary-foreground: 214 32% 91%;
+    --secondary-light: 263 50% 70%;
     
-    --muted: 215 20% 20%;
-    --muted-foreground: 200 10% 60%;
+    --accent: 263 70% 58%;
+    --accent-foreground: 214 32% 91%;
+    
+    --muted: 222 40% 18%;
+    --muted-foreground: 214 20% 65%;
+    
+    --success: 145 50% 50%;
+    --success-foreground: 222 47% 11%;
     
     --urgency: 10 75% 55%;
     --urgency-foreground: 0 0% 100%;
     --urgency-light: 10 70% 70%;
     
-    --border: 215 20% 25%;
-    --input: 215 20% 25%;
-    --ring: 190 75% 55%;
+    --border: 222 30% 22%;
+    --input: 222 30% 22%;
+    --ring: 199 89% 60%;
+    
+    --popover: 222 40% 14%;
+    --popover-foreground: 214 32% 91%;
   }
 }
 
