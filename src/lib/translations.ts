@@ -44,11 +44,12 @@ export const translations = {
     silentMode: 'Silent Mode',
     
     // Exercises
-    exercises: 'Exercises',
-    exercisesSubtitle: 'Guided micro-exercises for jaw relaxation',
+    exercises: 'Protocols',
+    exercisesSubtitle: 'Guided mandibular relief protocols',
     duration: 'Duration',
     seconds: 'seconds',
-    startExercise: 'Start Exercise',
+    startExercise: 'Start Protocol',
+    startProtocol: 'Start Protocol',
     
     // Progress
     progress: 'Progress',
@@ -78,22 +79,22 @@ export const translations = {
     confirm: 'Confirm',
     
     // Notifications (default messages)
-    relaxJaw: 'Relax your jaw 😊',
-    unclench: 'Unclench. Breathe.',
-    checkPosture: 'Check your posture',
-    takeBreak: 'Time for a jaw break',
+    relaxJaw: 'Mandibular relaxation recommended',
+    unclench: 'Release tension. Breathe deeply.',
+    checkPosture: 'Posture check recommended',
+    takeBreak: 'Time for jaw relief protocol',
     
-    // Reminder popup - Level 0 (Gentle)
-    reminderLevel0Title: 'Time to relax your jaw 💆‍♀️',
-    reminderLevel0Message: 'A gentle reminder to ease your jaw. Take a moment — you deserve it.',
-    // Reminder popup - Level 1 (Supportive)
-    reminderLevel1Title: 'Friendly check-in: tension building?',
-    reminderLevel1Message: 'Your jaw may be tightening again. Tension is okay — let\'s release it together.',
-    // Reminder popup - Level 2 (Urgent but caring)
-    reminderLevel2Title: 'Your jaw needs attention now',
-    reminderLevel2Message: 'Persistent tension detected — time for a deep release. Your jaw is asking for help.',
-    dismiss: 'Maybe later',
-    dismissUrgent: 'I\'ll do it soon',
+    // Reminder popup - Level 0 (Clinical gentle)
+    reminderLevel0Title: 'Mandibular Relaxation Recommended',
+    reminderLevel0Message: 'A scheduled pause for jaw tension relief. Consistent practice supports long-term improvement.',
+    // Reminder popup - Level 1 (Clinical supportive)
+    reminderLevel1Title: 'Recurring Tension Indicators Detected',
+    reminderLevel1Message: 'Signs of recurring tension noted. Initiate your relaxation exercise to prevent discomfort.',
+    // Reminder popup - Level 2 (Clinical urgent)
+    reminderLevel2Title: 'Urgent: Execute Relaxation Protocol',
+    reminderLevel2Message: 'Extended tension period detected. Immediate jaw release protocol is strongly recommended.',
+    dismiss: 'Postpone',
+    dismissUrgent: 'Acknowledge',
     
     // Reminder intervals
     intervalLabel: 'Reminder Interval',
@@ -105,9 +106,9 @@ export const translations = {
     interval120: '2 hours',
     
     // Daily goal celebration
-    dailyGoalComplete: 'Daily Goal Complete!',
-    dailyGoalMessage: 'Great job relaxing today!',
-    keepGoing: 'Keep Going',
+    dailyGoalComplete: 'Daily Protocol Complete',
+    dailyGoalMessage: 'Session concluded. Maintain your healthy routine.',
+    keepGoing: 'Continue',
     
     // Calendar
     recentActivity: 'Recent Activity',
@@ -115,6 +116,10 @@ export const translations = {
     previousMonth: 'Previous Month',
     nextMonth: 'Next Month',
     noActivity: 'No activity',
+    
+    // Progress feedback
+    streakProgress: 'Consistent progress: maintain regularity',
+    sessionComplete: 'Session complete. Continue with your healthy routine.',
   },
   pt: {
     // Common
@@ -161,11 +166,12 @@ export const translations = {
     silentMode: 'Modo Silencioso',
     
     // Exercises
-    exercises: 'Exercícios',
-    exercisesSubtitle: 'Micro-exercícios guiados para relaxamento da mandíbula',
+    exercises: 'Protocolos',
+    exercisesSubtitle: 'Protocolos guiados de alívio mandibular',
     duration: 'Duração',
     seconds: 'segundos',
-    startExercise: 'Iniciar Exercício',
+    startExercise: 'Iniciar Protocolo',
+    startProtocol: 'Iniciar Protocolo',
     
     // Progress
     progress: 'Progresso',
@@ -195,22 +201,22 @@ export const translations = {
     confirm: 'Confirmar',
     
     // Notifications (default messages)
-    relaxJaw: 'Relaxe a mandíbula 😊',
-    unclench: 'Solte a mordida. Respire.',
-    checkPosture: 'Verifique sua postura',
-    takeBreak: 'Hora de relaxar a mandíbula',
+    relaxJaw: 'Relaxamento mandibular recomendado',
+    unclench: 'Libere a tensão. Respire profundamente.',
+    checkPosture: 'Verificação de postura recomendada',
+    takeBreak: 'Hora do protocolo de alívio mandibular',
     
-    // Reminder popup - Level 0 (Gentle)
-    reminderLevel0Title: 'Hora de relaxar a mandíbula 💆‍♀️',
-    reminderLevel0Message: 'Um lembrete gentil para aliviar sua mandíbula. Reserve um momento — você merece.',
-    // Reminder popup - Level 1 (Supportive)
-    reminderLevel1Title: 'Check-in amigável: tensão acumulando?',
-    reminderLevel1Message: 'Sua mandíbula pode estar se contraindo novamente. A tensão é normal — vamos liberá-la juntos.',
-    // Reminder popup - Level 2 (Urgent but caring)
-    reminderLevel2Title: 'Sua mandíbula precisa de atenção agora',
-    reminderLevel2Message: 'Tensão persistente detectada — hora de uma liberação profunda. Sua mandíbula está pedindo ajuda.',
-    dismiss: 'Talvez depois',
-    dismissUrgent: 'Farei em breve',
+    // Reminder popup - Level 0 (Clinical gentle)
+    reminderLevel0Title: 'Relaxamento Mandibular Recomendado',
+    reminderLevel0Message: 'Pausa programada para alívio de tensão mandibular. A prática consistente favorece a melhora contínua.',
+    // Reminder popup - Level 1 (Clinical supportive)
+    reminderLevel1Title: 'Indicadores de Tensão Recorrente',
+    reminderLevel1Message: 'Sinais de tensão recorrente detectados. Inicie seu exercício de relaxamento para prevenir desconforto.',
+    // Reminder popup - Level 2 (Clinical urgent)
+    reminderLevel2Title: 'Urgente: Execute o Protocolo de Relaxamento',
+    reminderLevel2Message: 'Período prolongado de tensão detectado. Protocolo de liberação mandibular imediata fortemente recomendado.',
+    dismiss: 'Adiar',
+    dismissUrgent: 'Ciente',
     
     // Reminder intervals
     intervalLabel: 'Intervalo de Lembrete',
@@ -222,8 +228,8 @@ export const translations = {
     interval120: '2 horas',
     
     // Daily goal celebration
-    dailyGoalComplete: 'Meta Diária Concluída!',
-    dailyGoalMessage: 'Ótimo trabalho relaxando hoje!',
+    dailyGoalComplete: 'Protocolo Diário Concluído',
+    dailyGoalMessage: 'Sessão concluída. Mantenha sua rotina saudável.',
     keepGoing: 'Continuar',
     
     // Calendar
@@ -232,6 +238,10 @@ export const translations = {
     previousMonth: 'Mês Anterior',
     nextMonth: 'Próximo Mês',
     noActivity: 'Sem atividade',
+    
+    // Progress feedback
+    streakProgress: 'Progresso consistente: mantenha a regularidade',
+    sessionComplete: 'Sessão concluída. Continue com sua rotina saudável.',
   },
 };
 
