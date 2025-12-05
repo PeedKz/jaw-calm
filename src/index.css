@@ -46,6 +46,11 @@
     --destructive: 0 70% 60%;
     --destructive-foreground: 0 0% 100%;
 
+    /* Urgency - Soft Coral for gentle alerts */
+    --urgency: 10 85% 65%;
+    --urgency-foreground: 0 0% 100%;
+    --urgency-light: 10 80% 80%;
+
     /* Borders & Inputs */
     --border: 200 20% 90%;
     --input: 200 20% 90%;
@@ -90,6 +95,10 @@
     
     --muted: 215 20% 20%;
     --muted-foreground: 200 10% 60%;
+    
+    --urgency: 10 75% 55%;
+    --urgency-foreground: 0 0% 100%;
+    --urgency-light: 10 70% 70%;
     
     --border: 215 20% 25%;
     --input: 215 20% 25%;

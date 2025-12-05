@@ -22,8 +22,8 @@ const queryClient = new QueryClient();
 const AppRoutes = () => {
   const { isOnboardingCompleted, language } = useApp();
   
-  // Initialize relaxation popup trigger system
-  const { isPopupOpen, handleDismiss, handleStartExercise } = useRelaxationPopupTrigger();
+  // Initialize relaxation popup trigger system with urgency levels
+  const { isPopupOpen, urgencyLevel, handleDismiss, handleStartExercise } = useRelaxationPopupTrigger();
   
   // Handle daily goal celebration
   const { showCelebration, dismissCelebration } = useDailyGoalCelebration();
@@ -50,10 +50,11 @@ const AppRoutes = () => {
         )}
       </Routes>
       
-      {/* Relaxation Reminder Popup */}
+      {/* Relaxation Reminder Popup with urgency levels */}
       {isOnboardingCompleted && (
         <RelaxationReminderPopup
           isOpen={isPopupOpen}
+          urgencyLevel={urgencyLevel}
           onDismiss={handleDismiss}
           onStartExercise={handleStartExercise}
         />

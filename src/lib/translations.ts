@@ -83,10 +83,17 @@ export const translations = {
     checkPosture: 'Check your posture',
     takeBreak: 'Time for a jaw break',
     
-    // Reminder popup
-    reminderPopupTitle: 'Time to relax your jaw',
-    reminderPopupMessage: 'Take a few seconds to unclench and breathe.',
-    dismiss: 'Dismiss',
+    // Reminder popup - Level 0 (Gentle)
+    reminderLevel0Title: 'Time to relax your jaw 💆‍♀️',
+    reminderLevel0Message: 'A gentle reminder to ease your jaw. Take a moment — you deserve it.',
+    // Reminder popup - Level 1 (Supportive)
+    reminderLevel1Title: 'Friendly check-in: tension building?',
+    reminderLevel1Message: 'Your jaw may be tightening again. Tension is okay — let\'s release it together.',
+    // Reminder popup - Level 2 (Urgent but caring)
+    reminderLevel2Title: 'Your jaw needs attention now',
+    reminderLevel2Message: 'Persistent tension detected — time for a deep release. Your jaw is asking for help.',
+    dismiss: 'Maybe later',
+    dismissUrgent: 'I\'ll do it soon',
     
     // Reminder intervals
     intervalLabel: 'Reminder Interval',
@@ -193,10 +200,17 @@ export const translations = {
     checkPosture: 'Verifique sua postura',
     takeBreak: 'Hora de relaxar a mandíbula',
     
-    // Reminder popup
-    reminderPopupTitle: 'Hora de relaxar a mandíbula',
-    reminderPopupMessage: 'Reserve alguns segundos para soltar a mordida e respirar.',
-    dismiss: 'Dispensar',
+    // Reminder popup - Level 0 (Gentle)
+    reminderLevel0Title: 'Hora de relaxar a mandíbula 💆‍♀️',
+    reminderLevel0Message: 'Um lembrete gentil para aliviar sua mandíbula. Reserve um momento — você merece.',
+    // Reminder popup - Level 1 (Supportive)
+    reminderLevel1Title: 'Check-in amigável: tensão acumulando?',
+    reminderLevel1Message: 'Sua mandíbula pode estar se contraindo novamente. A tensão é normal — vamos liberá-la juntos.',
+    // Reminder popup - Level 2 (Urgent but caring)
+    reminderLevel2Title: 'Sua mandíbula precisa de atenção agora',
+    reminderLevel2Message: 'Tensão persistente detectada — hora de uma liberação profunda. Sua mandíbula está pedindo ajuda.',
+    dismiss: 'Talvez depois',
+    dismissUrgent: 'Farei em breve',
     
     // Reminder intervals
     intervalLabel: 'Intervalo de Lembrete',
