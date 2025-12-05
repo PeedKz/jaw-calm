@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { useApp } from '@/contexts/AppContext';
 import { t } from '@/lib/translations';
-import { Settings as SettingsIcon, Bell, Globe, Info, RotateCcw } from 'lucide-react';
+import { Settings as SettingsIcon, Bell, Globe, Info, RotateCcw, Moon } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import {
   AlertDialog,
@@ -21,7 +21,7 @@ import { useNavigate } from 'react-router-dom';
 import { storage } from '@/lib/storage';
 
 export default function Settings() {
-  const { language, setLanguage, reminders, setReminders } = useApp();
+  const { language, setLanguage, reminders, setReminders, darkMode, setDarkMode } = useApp();
   const navigate = useNavigate();
 
   const handleFrequencyChange = (value: string) => {
@@ -84,6 +84,25 @@ export default function Settings() {
             >
               Português
             </Button>
+          </div>
+        </motion.div>
+
+        {/* Dark Mode */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.05 }}
+          className="card-soft"
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Moon className="w-5 h-5 text-primary" />
+              <span className="text-lg font-semibold">{t('darkMode', language)}</span>
+            </div>
+            <Switch
+              checked={darkMode}
+              onCheckedChange={setDarkMode}
+            />
           </div>
         </motion.div>
 
