@@ -5,6 +5,7 @@ import { gamification } from '@/lib/gamification';
 import { Language } from '@/lib/translations';
 
 const LAST_RELAXATION_TIME_KEY = 'bruxism_last_relaxation_time';
+const DARK_MODE_KEY = 'bruxism_dark_mode';
 
 interface AppContextType {
   userProfile: UserProfile | null;
@@ -15,6 +16,8 @@ interface AppContextType {
   badges: Badge[];
   language: Language;
   setLanguage: (lang: Language) => void;
+  darkMode: boolean;
+  setDarkMode: (enabled: boolean) => void;
   isOnboardingCompleted: boolean;
   completeOnboarding: () => void;
   logRelaxation: (type: 'reminder' | 'manual') => void;
@@ -31,10 +34,29 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [language, setLanguageState] = useState<Language>(
     (userProfile?.language as Language) || 'pt'
   );
+  const [darkMode, setDarkModeState] = useState<boolean>(() => {
+    const stored = localStorage.getItem(DARK_MODE_KEY);
+    if (stored !== null) return stored === 'true';
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+  });
   const [isOnboardingCompleted, setIsOnboardingCompleted] = useState(
     storage.isOnboardingCompleted()
   );
   const [todayCount, setTodayCount] = useState(gamification.getTodayEntries().length);
+
+  // Apply dark mode class to document
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [darkMode]);
+
+  const setDarkMode = (enabled: boolean) => {
+    localStorage.setItem(DARK_MODE_KEY, enabled.toString());
+    setDarkModeState(enabled);
+  };
 
   const setUserProfile = (profile: UserProfile) => {
     storage.setUserProfile(profile);
@@ -113,6 +135,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         badges,
         language,
         setLanguage,
+        darkMode,
+        setDarkMode,
         isOnboardingCompleted,
         completeOnboarding,
         logRelaxation,
