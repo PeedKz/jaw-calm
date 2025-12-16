@@ -2,6 +2,12 @@ import { useEffect, useCallback, useRef, useState } from 'react';
 import { useApp } from '@/contexts/AppContext';
 import { playNotificationSound, stopNotificationSound } from '@/utils/notificationAudio';
 import { triggerVibration, stopVibration } from '@/utils/vibrate';
+import { 
+  scheduleRecurringReminder, 
+  cancelReminderNotifications,
+  isNativePlatform,
+  initializeNotificationListeners
+} from '@/services/notifications';
 
 const STORAGE_KEY = 'bruxism_last_relaxation_time';
 const URGENCY_KEY = 'bruxism_reminder_urgency';
@@ -109,7 +115,27 @@ export const useRelaxationPopupTrigger = () => {
     saveUrgencyLevel(0);
   }, [saveUrgencyLevel]);
 
-  // Check for reminders periodically
+  // Initialize notification listeners on mount
+  useEffect(() => {
+    if (isNativePlatform()) {
+      initializeNotificationListeners();
+    }
+  }, []);
+
+  // Schedule native notifications when reminders are enabled/changed
+  useEffect(() => {
+    if (!reminders.enabled) {
+      cancelReminderNotifications();
+      return;
+    }
+
+    // Schedule native local notification for Android/iOS
+    if (isNativePlatform()) {
+      scheduleRecurringReminder(reminders.frequency);
+    }
+  }, [reminders.enabled, reminders.frequency]);
+
+  // Check for reminders periodically (for in-app popup)
   useEffect(() => {
     if (!reminders.enabled) {
       if (timerRef.current) {
