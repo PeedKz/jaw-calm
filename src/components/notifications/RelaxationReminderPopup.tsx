@@ -5,6 +5,7 @@ import { t } from '@/lib/translations';
 import { X, Play, Clock, AlertCircle, Heart } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { UrgencyLevel } from '@/hooks/useRelaxationPopupTrigger';
+import { useModalBackHandler } from '@/hooks/useAndroidBackButton';
 
 interface RelaxationReminderPopupProps {
   isOpen: boolean;
@@ -50,6 +51,9 @@ export const RelaxationReminderPopup = ({
   const navigate = useNavigate();
   const config = urgencyConfig[urgencyLevel];
   const Icon = config.icon;
+
+  // Register back button handler for closing modal on Android
+  useModalBackHandler(isOpen, onDismiss);
 
   const handleStartExercise = () => {
     onStartExercise();

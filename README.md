@@ -1,73 +1,84 @@
-# Welcome to your Lovable project
+# Jaw Calm - Relaxation App
 
 ## Project info
 
 **URL**: https://lovable.dev/projects/201a04a3-125e-4207-8ddd-24b78dbf5673
 
-## How can I edit this code?
+## Technologies
 
-There are several ways of editing your application.
+- Vite + React + TypeScript
+- shadcn-ui + Tailwind CSS
+- Capacitor (Android/iOS)
 
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/201a04a3-125e-4207-8ddd-24b78dbf5673) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
+## Development
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+# Install dependencies
+npm install
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Start development server
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+## Android Build (Capacitor)
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+```sh
+# 1. Build the web app
+npm run build
 
-**Use GitHub Codespaces**
+# 2. Add Android platform (first time only)
+npx cap add android
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+# 3. Sync web assets to native project
+npx cap sync android
 
-## What technologies are used for this project?
+# 4. Open in Android Studio
+npx cap open android
 
-This project is built with:
+# Or run directly on device/emulator
+npx cap run android
+```
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## iOS Build (Capacitor)
 
-## How can I deploy this project?
+```sh
+# 1. Build the web app
+npm run build
 
-Simply open [Lovable](https://lovable.dev/projects/201a04a3-125e-4207-8ddd-24b78dbf5673) and click on Share -> Publish.
+# 2. Add iOS platform (first time only)
+npx cap add ios
 
-## Can I connect a custom domain to my Lovable project?
+# 3. Sync web assets to native project
+npx cap sync ios
 
-Yes, you can!
+# 4. Open in Xcode
+npx cap open ios
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+# Or run directly on device/simulator
+npx cap run ios
+```
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+## Live Reload (Development)
+
+For live reload during development, update `capacitor.config.ts`:
+
+```typescript
+const config: CapacitorConfig = {
+  // ...
+  server: {
+    url: 'http://YOUR_LOCAL_IP:5173',
+    cleartext: true,
+  },
+};
+```
+
+Then run: `npx cap sync && npx cap run android`
+
+## Capacitor Plugins Used
+
+- `@capacitor/app` - Android back button handling
+- `@capacitor/local-notifications` - Reminder notifications
+
+## Deploy
+
+Open [Lovable](https://lovable.dev/projects/201a04a3-125e-4207-8ddd-24b78dbf5673) and click Share → Publish.
