@@ -14,6 +14,7 @@ import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 import { useRelaxationPopupTrigger } from "./hooks/useRelaxationPopupTrigger";
 import { useDailyGoalCelebration } from "./hooks/useDailyGoalCelebration";
+import { useAndroidBackButton } from "./hooks/useAndroidBackButton";
 import { DailyGoalAnimation } from "./components/celebrations/DailyGoalAnimation";
 import { RelaxationReminderPopup } from "./components/notifications/RelaxationReminderPopup";
 
@@ -27,6 +28,9 @@ const AppRoutes = () => {
   
   // Handle daily goal celebration
   const { showCelebration, dismissCelebration } = useDailyGoalCelebration();
+  
+  // Handle Android back button
+  useAndroidBackButton();
 
   return (
     <>
