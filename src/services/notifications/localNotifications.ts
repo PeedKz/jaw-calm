@@ -2,7 +2,7 @@ import { LocalNotifications, ScheduleOptions, Channel } from '@capacitor/local-n
 import { Capacitor } from '@capacitor/core';
 import { toast } from 'sonner';
 
-const CHANNEL_ID = 'jawcalm_reminders';
+const CHANNEL_ID = 'alerts';
 const REMINDER_NOTIFICATION_ID = 1001;
 
 // Check if we're running on a native platform
@@ -17,8 +17,8 @@ export const createNotificationChannel = async (): Promise<void> => {
   try {
     const channel: Channel = {
       id: CHANNEL_ID,
-      name: 'Jaw Calm Reminders',
-      description: 'Reminders to relax your jaw',
+      name: 'Desencostaê Alerts',
+      description: 'Lembretes para relaxar a mandíbula',
       importance: 5, // High importance
       visibility: 1, // Public
       vibration: true,
@@ -31,21 +31,35 @@ export const createNotificationChannel = async (): Promise<void> => {
   }
 };
 
-// Request notification permissions
+// Request notification permissions (works on both web and native)
 export const requestNotificationPermission = async (): Promise<boolean> => {
-  if (!isNativePlatform()) return true; // Always return true for web
-  
   try {
-    const permission = await LocalNotifications.requestPermissions();
-    
-    if (permission.display !== 'granted') {
-      toast.error('Permissão de notificação negada', {
-        description: 'Ative as notificações nas configurações do dispositivo para receber lembretes.'
-      });
-      return false;
+    if (isNativePlatform()) {
+      const permission = await LocalNotifications.requestPermissions();
+      
+      if (permission.display !== 'granted') {
+        toast.error('Permissão de notificação negada', {
+          description: 'Ative as notificações nas configurações do dispositivo para receber lembretes.'
+        });
+        return false;
+      }
+      return true;
+    } else {
+      // Web: Use Notification API
+      if (!('Notification' in window)) {
+        console.log('Web platform: Notifications not supported');
+        return false;
+      }
+      
+      const permission = await Notification.requestPermission();
+      if (permission !== 'granted') {
+        toast.error('Permissão de notificação negada', {
+          description: 'Ative as notificações no navegador para receber lembretes.'
+        });
+        return false;
+      }
+      return true;
     }
-    
-    return true;
   } catch (error) {
     console.error('Failed to request notification permission:', error);
     return false;
@@ -53,85 +67,126 @@ export const requestNotificationPermission = async (): Promise<boolean> => {
 };
 
 // Check if notifications are permitted
-export const checkNotificationPermission = async (): Promise<boolean> => {
-  if (!isNativePlatform()) return true;
-  
+export const checkNotificationPermission = async (): Promise<'granted' | 'denied' | 'prompt'> => {
   try {
-    const permission = await LocalNotifications.checkPermissions();
-    return permission.display === 'granted';
+    if (isNativePlatform()) {
+      const permission = await LocalNotifications.checkPermissions();
+      if (permission.display === 'granted') return 'granted';
+      if (permission.display === 'denied') return 'denied';
+      return 'prompt';
+    } else {
+      // Web: Check Notification API
+      if (!('Notification' in window)) {
+        return 'denied';
+      }
+      return Notification.permission as 'granted' | 'denied' | 'prompt';
+    }
   } catch (error) {
     console.error('Failed to check notification permission:', error);
-    return false;
+    return 'denied';
   }
 };
+
+// Store for web notification timeout
+let webNotificationTimeout: NodeJS.Timeout | null = null;
 
 // Schedule a reminder notification
 export const scheduleReminderNotification = async (
   nextTriggerDate: Date,
-  title: string = 'Jaw Calm',
-  body: string = 'Hora de desencostar os dentes 😌'
+  title: string = 'Desencostaê! 🦷',
+  body: string = 'Hora de relaxar a mandíbula e soltar os dentes.'
 ): Promise<boolean> => {
-  if (!isNativePlatform()) {
-    console.log('Web platform: Notification scheduled for', nextTriggerDate);
-    return true;
-  }
-  
   try {
-    // First, ensure we have permission
-    const hasPermission = await requestNotificationPermission();
-    if (!hasPermission) return false;
-    
-    // Create channel if it doesn't exist
-    await createNotificationChannel();
-    
-    // Cancel any existing reminder notifications
-    await cancelReminderNotifications();
-    
-    const scheduleOptions: ScheduleOptions = {
-      notifications: [
-        {
-          id: REMINDER_NOTIFICATION_ID,
-          title,
-          body,
-          schedule: {
-            at: nextTriggerDate,
-            allowWhileIdle: true,
+    const hasPermission = await checkNotificationPermission();
+    if (hasPermission === 'denied') {
+      toast.error('Para ouvir o alerta, precisamos da permissão de notificação', {
+        description: 'Ative as notificações nas configurações para receber lembretes.'
+      });
+      return false;
+    }
+
+    if (isNativePlatform()) {
+      // First, ensure we have permission
+      const granted = await requestNotificationPermission();
+      if (!granted) return false;
+      
+      // Create channel if it doesn't exist
+      await createNotificationChannel();
+      
+      // Cancel any existing reminder notifications
+      await cancelReminderNotifications();
+      
+      const scheduleOptions: ScheduleOptions = {
+        notifications: [
+          {
+            id: REMINDER_NOTIFICATION_ID,
+            title,
+            body,
+            schedule: {
+              at: nextTriggerDate,
+              allowWhileIdle: true,
+            },
+            channelId: CHANNEL_ID,
+            smallIcon: 'ic_stat_icon_config_sample',
+            iconColor: '#7C3AED',
+            sound: 'default',
+            actionTypeId: 'OPEN_APP',
           },
-          channelId: CHANNEL_ID,
-          smallIcon: 'ic_stat_icon_config_sample',
-          iconColor: '#7C3AED',
-          actionTypeId: 'OPEN_APP',
-        },
-      ],
-    };
-    
-    await LocalNotifications.schedule(scheduleOptions);
-    console.log('Notification scheduled for:', nextTriggerDate);
-    return true;
+        ],
+      };
+      
+      await LocalNotifications.schedule(scheduleOptions);
+      console.log('Native notification scheduled for:', nextTriggerDate);
+      return true;
+    } else {
+      // Web: Schedule using setTimeout
+      await cancelReminderNotifications();
+      
+      const delay = nextTriggerDate.getTime() - Date.now();
+      if (delay <= 0) {
+        // Trigger immediately if time has passed
+        showWebNotification(title, body);
+        return true;
+      }
+      
+      webNotificationTimeout = setTimeout(() => {
+        showWebNotification(title, body);
+      }, delay);
+      
+      console.log('Web notification scheduled for:', nextTriggerDate);
+      return true;
+    }
   } catch (error) {
     console.error('Failed to schedule notification:', error);
     return false;
   }
 };
 
+// Show web notification
+const showWebNotification = (title: string, body: string) => {
+  if ('Notification' in window && Notification.permission === 'granted') {
+    const notification = new Notification(title, {
+      body,
+      icon: '/favicon.ico',
+      badge: '/favicon.ico',
+      tag: 'desencostaê-reminder',
+      requireInteraction: true,
+    });
+    
+    notification.onclick = () => {
+      window.focus();
+      notification.close();
+    };
+  }
+};
+
 // Schedule recurring reminder notifications
 export const scheduleRecurringReminder = async (
   intervalMinutes: number,
-  title: string = 'Jaw Calm',
-  body: string = 'Hora de desencostar os dentes 😌'
+  title: string = 'Desencostaê! 🦷',
+  body: string = 'Hora de relaxar a mandíbula e soltar os dentes.'
 ): Promise<boolean> => {
-  if (!isNativePlatform()) {
-    console.log('Web platform: Recurring notification would be scheduled every', intervalMinutes, 'minutes');
-    return true;
-  }
-  
   try {
-    const hasPermission = await requestNotificationPermission();
-    if (!hasPermission) return false;
-    
-    await createNotificationChannel();
-    await cancelReminderNotifications();
-    
     // Calculate next trigger time
     const nextTrigger = new Date();
     nextTrigger.setMinutes(nextTrigger.getMinutes() + intervalMinutes);
@@ -145,17 +200,21 @@ export const scheduleRecurringReminder = async (
 
 // Cancel all reminder notifications
 export const cancelReminderNotifications = async (): Promise<void> => {
-  if (!isNativePlatform()) {
-    console.log('Web platform: Notifications cancelled');
-    return;
-  }
-  
   try {
-    // Cancel the specific reminder notification
-    await LocalNotifications.cancel({
-      notifications: [{ id: REMINDER_NOTIFICATION_ID }],
-    });
-    console.log('Reminder notifications cancelled');
+    if (isNativePlatform()) {
+      // Cancel the specific reminder notification
+      await LocalNotifications.cancel({
+        notifications: [{ id: REMINDER_NOTIFICATION_ID }],
+      });
+      console.log('Native reminder notifications cancelled');
+    } else {
+      // Web: Clear timeout
+      if (webNotificationTimeout) {
+        clearTimeout(webNotificationTimeout);
+        webNotificationTimeout = null;
+      }
+      console.log('Web notification cancelled');
+    }
   } catch (error) {
     console.error('Failed to cancel notifications:', error);
   }
@@ -163,7 +222,13 @@ export const cancelReminderNotifications = async (): Promise<void> => {
 
 // Cancel all pending notifications
 export const cancelAllNotifications = async (): Promise<void> => {
-  if (!isNativePlatform()) return;
+  if (!isNativePlatform()) {
+    if (webNotificationTimeout) {
+      clearTimeout(webNotificationTimeout);
+      webNotificationTimeout = null;
+    }
+    return;
+  }
   
   try {
     const pending = await LocalNotifications.getPending();
