@@ -9,7 +9,7 @@ export const translations = {
     done: 'Done',
     
     // Onboarding
-    welcome: 'Welcome to JawRelax',
+    welcome: 'Welcome to Desencostaê',
     onboardingSubtitle: 'Your journey to a healthier jaw starts here',
     bruxismType: 'When do you experience bruxism?',
     daytime: 'Daytime',
@@ -131,7 +131,7 @@ export const translations = {
     done: 'Pronto',
     
     // Onboarding
-    welcome: 'Bem-vindo ao JawRelax',
+    welcome: 'Bem-vindo ao Desencostaê',
     onboardingSubtitle: 'Sua jornada para uma mandíbula mais saudável começa aqui',
     bruxismType: 'Quando você sofre de bruxismo?',
     daytime: 'Durante o dia',

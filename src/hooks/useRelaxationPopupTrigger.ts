@@ -6,7 +6,8 @@ import {
   scheduleRecurringReminder, 
   cancelReminderNotifications,
   isNativePlatform,
-  initializeNotificationListeners
+  initializeNotificationListeners,
+  checkNotificationPermission
 } from '@/services/notifications';
 
 const STORAGE_KEY = 'bruxism_last_relaxation_time';
@@ -124,15 +125,28 @@ export const useRelaxationPopupTrigger = () => {
 
   // Schedule native notifications when reminders are enabled/changed
   useEffect(() => {
-    if (!reminders.enabled) {
-      cancelReminderNotifications();
-      return;
-    }
+    const handleNotificationScheduling = async () => {
+      if (!reminders.enabled) {
+        cancelReminderNotifications();
+        return;
+      }
 
-    // Schedule native local notification for Android/iOS
-    if (isNativePlatform()) {
-      scheduleRecurringReminder(reminders.frequency);
-    }
+      // Check permission before scheduling (don't show toast here, just skip if denied)
+      const permission = await checkNotificationPermission();
+      if (permission === 'denied') {
+        console.log('Notification permission denied, skipping schedule');
+        return;
+      }
+
+      // Schedule notification
+      scheduleRecurringReminder(
+        reminders.frequency,
+        'Desencostaê! 🦷',
+        'Hora de relaxar a mandíbula e soltar os dentes.'
+      );
+    };
+
+    handleNotificationScheduling();
   }, [reminders.enabled, reminders.frequency]);
 
   // Check for reminders periodically (for in-app popup)

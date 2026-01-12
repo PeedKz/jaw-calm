@@ -18,11 +18,44 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { useNavigate } from 'react-router-dom';
-import { storage } from '@/lib/storage';
+import { useState, useEffect } from 'react';
+import { toast } from 'sonner';
+import {
+  checkNotificationPermission,
+  requestNotificationPermission,
+  cancelReminderNotifications,
+} from '@/services/notifications';
 
 export default function Settings() {
   const { language, setLanguage, reminders, setReminders, darkMode, setDarkMode } = useApp();
   const navigate = useNavigate();
+  const [notificationPermission, setNotificationPermission] = useState<'granted' | 'denied' | 'prompt'>('prompt');
+
+  // Check notification permission on mount
+  useEffect(() => {
+    const checkPermission = async () => {
+      const permission = await checkNotificationPermission();
+      setNotificationPermission(permission);
+    };
+    checkPermission();
+  }, []);
+
+  const handleNotificationToggle = async (enabled: boolean) => {
+    if (enabled) {
+      const granted = await requestNotificationPermission();
+      if (granted) {
+        setReminders({ ...reminders, enabled: true });
+        setNotificationPermission('granted');
+        toast.success(language === 'pt' ? 'Notificações ativadas!' : 'Notifications enabled!');
+      } else {
+        setNotificationPermission('denied');
+      }
+    } else {
+      await cancelReminderNotifications();
+      setReminders({ ...reminders, enabled: false });
+      toast.info(language === 'pt' ? 'Notificações desativadas' : 'Notifications disabled');
+    }
+  };
 
   const handleFrequencyChange = (value: string) => {
     setReminders({ ...reminders, frequency: parseInt(value, 10) });
@@ -119,6 +152,27 @@ export default function Settings() {
           </div>
 
           <div className="space-y-6">
+            {/* Enable Notifications Toggle */}
+            <div className="flex items-center justify-between">
+              <div>
+                <span className="text-sm font-medium">
+                  {language === 'pt' ? 'Ativar lembretes (Notificações)' : 'Enable reminders (Notifications)'}
+                </span>
+                {notificationPermission === 'denied' && (
+                  <p className="text-xs text-destructive mt-1">
+                    {language === 'pt' 
+                      ? 'Permissão negada. Ative nas configurações do dispositivo.' 
+                      : 'Permission denied. Enable in device settings.'}
+                  </p>
+                )}
+              </div>
+              <Switch
+                checked={reminders.enabled}
+                onCheckedChange={handleNotificationToggle}
+                disabled={notificationPermission === 'denied'}
+              />
+            </div>
+
             {/* Reminder Interval */}
             <div>
               <label className="text-sm text-muted-foreground block mb-3">
@@ -127,6 +181,7 @@ export default function Settings() {
               <Select
                 value={reminders.frequency.toString()}
                 onValueChange={handleFrequencyChange}
+                disabled={!reminders.enabled}
               >
                 <SelectTrigger className="w-full">
                   <SelectValue />
@@ -147,6 +202,7 @@ export default function Settings() {
               <Switch
                 checked={reminders.sound}
                 onCheckedChange={(checked) => setReminders({ ...reminders, sound: checked })}
+                disabled={!reminders.enabled}
               />
             </div>
 
@@ -156,6 +212,7 @@ export default function Settings() {
               <Switch
                 checked={reminders.vibration}
                 onCheckedChange={(checked) => setReminders({ ...reminders, vibration: checked })}
+                disabled={!reminders.enabled}
               />
             </div>
 
@@ -167,6 +224,7 @@ export default function Settings() {
                 onCheckedChange={(checked) =>
                   setReminders({ ...reminders, silentMode: checked })
                 }
+                disabled={!reminders.enabled}
               />
             </div>
           </div>
@@ -223,8 +281,8 @@ export default function Settings() {
           </div>
           <p className="text-sm text-muted-foreground leading-relaxed">
             {language === 'pt'
-              ? 'JawRelax ajuda você a desenvolver hábitos mais saudáveis para sua mandíbula através de lembretes inteligentes, exercícios e gamificação.'
-              : 'JawRelax helps you develop healthier jaw habits through smart reminders, exercises, and gamification.'}
+              ? 'Desencostaê ajuda você a lembrar de relaxar a mandíbula e soltar os dentes através de lembretes inteligentes, exercícios e gamificação.'
+              : 'Desencostaê helps you remember to relax your jaw and unclench your teeth through smart reminders, exercises, and gamification.'}
           </p>
           <p className="text-xs text-muted-foreground mt-4">Version 1.0.0</p>
         </motion.div>
