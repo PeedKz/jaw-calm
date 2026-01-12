@@ -1,15 +1,21 @@
 import { motion } from 'framer-motion';
-import { getLocalizedWeekDays } from '@/utils/localizedDates';
+import { getLocalizedWeekDays, getUltraShortWeekDays } from '@/utils/localizedDates';
 import { gamification } from '@/lib/gamification';
 import { Language } from '@/lib/translations';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface WeeklyCalendarProps {
   language: Language;
 }
 
 export const WeeklyCalendar = ({ language }: WeeklyCalendarProps) => {
+  const isMobile = useIsMobile();
   const weekData = gamification.getWeeklyProgress();
-  const weekDays = getLocalizedWeekDays(language, true);
+  
+  // Use ultra-short (single letter) for mobile, short (3 letters) for larger screens
+  const weekDays = isMobile 
+    ? getUltraShortWeekDays(language)
+    : getLocalizedWeekDays(language, true);
   
   const chartData = weekDays.map((day, index) => {
     // Get the English day name for the key since weekData uses English keys
@@ -27,13 +33,13 @@ export const WeeklyCalendar = ({ language }: WeeklyCalendarProps) => {
     <div className="grid grid-cols-7 gap-1 sm:gap-2 md:gap-3">
       {chartData.map((data, index) => (
         <motion.div
-          key={data.day}
+          key={index}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: index * 0.05 }}
           className="flex flex-col items-center gap-1 sm:gap-2 min-w-0"
         >
-          <div className="text-[10px] sm:text-xs text-muted-foreground font-medium truncate w-full text-center">
+          <div className="text-[10px] sm:text-xs text-muted-foreground font-medium text-center uppercase">
             {data.day}
           </div>
           <div className="w-full aspect-square relative">

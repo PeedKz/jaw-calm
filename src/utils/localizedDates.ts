@@ -17,6 +17,18 @@ export const getLocalizedWeekDays = (language: Language, short: boolean = true):
   return days.map(day => format(day, short ? 'EEE' : 'EEEE', { locale }));
 };
 
+// Ultra-short day names (single letter) for mobile
+export const getUltraShortWeekDays = (language: Language): string[] => {
+  const locale = getLocale(language);
+  const start = startOfWeek(new Date(), { locale });
+  const days = eachDayOfInterval({
+    start,
+    end: endOfWeek(start, { locale }),
+  });
+  
+  return days.map(day => format(day, 'EEEEE', { locale }));
+};
+
 export const getMonthMatrix = (year: number, month: number): (Date | null)[][] => {
   const firstDay = new Date(year, month, 1);
   const lastDay = endOfMonth(firstDay);
