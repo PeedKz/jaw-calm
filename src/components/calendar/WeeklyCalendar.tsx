@@ -24,16 +24,18 @@ export const WeeklyCalendar = ({ language }: WeeklyCalendarProps) => {
   const maxCount = Math.max(...chartData.map(d => d.count), 1);
 
   return (
-    <div className="grid grid-cols-7 gap-2">
+    <div className="grid grid-cols-7 gap-1 sm:gap-2 md:gap-3">
       {chartData.map((data, index) => (
         <motion.div
           key={data.day}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: index * 0.05 }}
-          className="flex flex-col items-center gap-2"
+          className="flex flex-col items-center gap-1 sm:gap-2 min-w-0"
         >
-          <div className="text-xs text-muted-foreground font-medium">{data.day}</div>
+          <div className="text-[10px] sm:text-xs text-muted-foreground font-medium truncate w-full text-center">
+            {data.day}
+          </div>
           <div className="w-full aspect-square relative">
             <div className="absolute inset-0 rounded-lg bg-muted" />
             <motion.div
@@ -43,7 +45,7 @@ export const WeeklyCalendar = ({ language }: WeeklyCalendarProps) => {
               className="absolute bottom-0 left-0 right-0 rounded-lg bg-gradient-to-t from-primary to-secondary"
             />
           </div>
-          <div className="text-xs font-semibold">{data.count}</div>
+          <div className="text-[10px] sm:text-xs font-semibold">{data.count}</div>
         </motion.div>
       ))}
     </div>
