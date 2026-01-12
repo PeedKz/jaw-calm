@@ -2,20 +2,25 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { getMonthMatrix, formatMonthYear, getLocalizedWeekDays, isToday, isSameDay } from '@/utils/localizedDates';
+import { getMonthMatrix, formatMonthYear, getLocalizedWeekDays, getUltraShortWeekDays, isToday } from '@/utils/localizedDates';
 import { gamification } from '@/lib/gamification';
 import { Language, t } from '@/lib/translations';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface MonthlyCalendarProps {
   language: Language;
 }
 
 export const MonthlyCalendar = ({ language }: MonthlyCalendarProps) => {
+  const isMobile = useIsMobile();
   const [currentDate, setCurrentDate] = useState(new Date());
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
 
-  const weekDays = getLocalizedWeekDays(language, true);
+  // Use ultra-short (single letter) for mobile, short (3 letters) for larger screens
+  const weekDays = isMobile 
+    ? getUltraShortWeekDays(language)
+    : getLocalizedWeekDays(language, true);
   const monthMatrix = getMonthMatrix(year, month);
 
   const previousMonth = () => {
@@ -67,8 +72,8 @@ export const MonthlyCalendar = ({ language }: MonthlyCalendarProps) => {
 
       {/* Week day headers */}
       <div className="grid grid-cols-7 gap-1">
-        {weekDays.map((day) => (
-          <div key={day} className="text-center text-xs font-medium text-muted-foreground py-2">
+        {weekDays.map((day, index) => (
+          <div key={index} className="text-center text-[10px] sm:text-xs font-medium text-muted-foreground py-2 uppercase">
             {day}
           </div>
         ))}
