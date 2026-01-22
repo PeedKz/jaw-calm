@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  android-build:
+    build:
+      context: .
+      dockerfile: Dockerfile.android
+    volumes:
+      # Pasta onde o APK será salvo
+      - ./output:/app/output
+    environment:
+      - ANDROID_HOME=/opt/android-sdk
+      - ANDROID_SDK_ROOT=/opt/android-sdk
