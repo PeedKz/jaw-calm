@@ -1,0 +1,59 @@
+# Dockerfile para build Android do JawRelax
+# Baseado em Ubuntu com Node.js, Android SDK e Gradle
+
+FROM ubuntu:22.04
+
+# Evitar prompts interativos
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Instalar dependências básicas
+RUN apt-get update && apt-get install -y \
+    curl \
+    git \
+    unzip \
+    openjdk-17-jdk \
+    wget \
+    && rm -rf /var/lib/apt/lists/*
+
+# Instalar Node.js 20
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y nodejs
+
+# Configurar variáveis de ambiente do Android SDK
+ENV ANDROID_HOME=/opt/android-sdk
+ENV ANDROID_SDK_ROOT=/opt/android-sdk
+ENV PATH="${PATH}:${ANDROID_HOME}/cmdline-tools/latest/bin:${ANDROID_HOME}/platform-tools:${ANDROID_HOME}/build-tools/34.0.0"
+
+# Baixar e instalar Android Command Line Tools
+RUN mkdir -p ${ANDROID_HOME}/cmdline-tools \
+    && cd ${ANDROID_HOME}/cmdline-tools \
+    && wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O cmdline-tools.zip \
+    && unzip -q cmdline-tools.zip \
+    && rm cmdline-tools.zip \
+    && mv cmdline-tools latest
+
+# Aceitar licenças e instalar componentes do SDK
+RUN yes | sdkmanager --licenses \
+    && sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
+
+# Criar diretório da aplicação
+WORKDIR /app
+
+# Copiar arquivos de dependências primeiro (para cache)
+COPY package*.json ./
+
+# Instalar dependências Node.js
+RUN npm install
+
+# Copiar resto do código
+COPY . .
+
+# Build do projeto web
+RUN npm run build
+
+# Adicionar plataforma Android e sincronizar
+RUN npx cap add android || true
+RUN npx cap sync android
+
+# Comando padrão - gerar APK debug
+CMD ["sh", "-c", "cd android && ./gradlew assembleDebug && cp app/build/outputs/apk/debug/app-debug.apk /app/output/"]
