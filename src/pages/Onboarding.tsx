@@ -8,9 +8,9 @@ import { UserProfile } from '@/types';
 import { useNavigate } from 'react-router-dom';
 import { Sun, Moon, Sparkles } from 'lucide-react';
 import onboardingHero from '@/assets/onboarding-hero.png';
-
+import { calculateIntervalFromGoal } from '@/lib/reminderCalculator';
 export default function Onboarding() {
-  const { language, setUserProfile, completeOnboarding } = useApp();
+  const { language, setUserProfile, completeOnboarding, reminders, setReminders } = useApp();
   const navigate = useNavigate();
   const [step, setStep] = useState(0);
   const [formData, setFormData] = useState({
@@ -28,6 +28,15 @@ export default function Onboarding() {
       language,
     };
     setUserProfile(profile);
+    
+    // Calculate and set the reminder interval based on daily goal
+    const calculatedInterval = calculateIntervalFromGoal(formData.dailyGoal);
+    setReminders({
+      ...reminders,
+      frequency: calculatedInterval,
+      enabled: true,
+    });
+    
     completeOnboarding();
     navigate('/');
   };
