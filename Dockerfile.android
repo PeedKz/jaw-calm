@@ -73,5 +73,8 @@ RUN if [ ! -d "android" ]; then \
 # Sync com Android
 RUN npx cap sync android
 
-# Comando padrão - gerar APK debug
-CMD ["sh", "-c", "cd android && ./gradlew assembleDebug && cp app/build/outputs/apk/debug/app-debug.apk /app/output/"]
+# Criar pasta output se não existir
+RUN mkdir -p /app/output
+
+# Comando padrão - gerar APK debug com logs
+CMD ["sh", "-c", "echo '=== Starting Gradle build ===' && cd android && ./gradlew assembleDebug && echo '=== Build complete, copying APK ===' && ls -la app/build/outputs/apk/debug/ && cp app/build/outputs/apk/debug/app-debug.apk /app/output/ && echo '=== APK copied to /app/output ===' && ls -la /app/output/"]
