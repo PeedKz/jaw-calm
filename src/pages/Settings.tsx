@@ -25,9 +25,10 @@ import {
   requestNotificationPermission,
   cancelReminderNotifications,
 } from '@/services/notifications';
+import { getReminderScheduleDescription } from '@/lib/reminderCalculator';
 
 export default function Settings() {
-  const { language, setLanguage, reminders, setReminders, darkMode, setDarkMode } = useApp();
+  const { language, setLanguage, reminders, setReminders, darkMode, setDarkMode, userProfile } = useApp();
   const navigate = useNavigate();
   const [notificationPermission, setNotificationPermission] = useState<'granted' | 'denied' | 'prompt'>('prompt');
 
@@ -175,7 +176,7 @@ export default function Settings() {
 
             {/* Reminder Interval */}
             <div>
-              <label className="text-sm text-muted-foreground block mb-3">
+              <label className="text-sm text-muted-foreground block mb-2">
                 {t('intervalLabel', language)}
               </label>
               <Select
@@ -194,6 +195,16 @@ export default function Settings() {
                   ))}
                 </SelectContent>
               </Select>
+              <p className="text-xs text-muted-foreground mt-2">
+                {getReminderScheduleDescription(reminders.frequency, language)}
+                {userProfile && (
+                  <span className="block mt-1">
+                    {language === 'pt' 
+                      ? `Meta diária: ${userProfile.dailyGoal} relaxamentos` 
+                      : `Daily goal: ${userProfile.dailyGoal} relaxations`}
+                  </span>
+                )}
+              </p>
             </div>
 
             {/* Sound Toggle */}
