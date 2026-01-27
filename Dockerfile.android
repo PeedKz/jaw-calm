@@ -51,8 +51,22 @@ COPY . .
 # Build do projeto web
 RUN npm run build
 
-# Adicionar plataforma Android e sincronizar
-RUN npx cap add android || true
+# Verificar que dist existe
+RUN ls -la dist/
+
+# Inicializar Capacitor se necessário e adicionar Android
+RUN npx cap add android --verbose 2>&1 || echo "Cap add failed, checking if already exists..."
+
+# Listar arquivos para debug
+RUN ls -la
+
+# Se android não foi criado, criar manualmente
+RUN if [ ! -d "android" ]; then \
+      echo "Android directory not found, retrying..." && \
+      npx cap add android; \
+    fi
+
+# Sync com Android
 RUN npx cap sync android
 
 # Comando padrão - gerar APK debug
