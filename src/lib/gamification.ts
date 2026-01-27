@@ -2,7 +2,9 @@ import { UserProgress, Badge, HabitEntry } from '@/types';
 import { storage } from './storage';
 
 const XP_PER_RELAXATION = 10;
+const XP_PER_FACT = 5;
 const XP_PER_LEVEL = 100;
+const FACTS_STREAK_KEY = 'desencosta_facts_streak';
 
 export const gamification = {
   // Calculate level from XP
@@ -79,10 +81,80 @@ export const gamification = {
     gamification.checkBadges(updatedProgress);
   },
 
+  // Award XP for reading daily fact
+  awardFactXP: (): number => {
+    const progress = storage.getUserProgress();
+    const newXP = progress.totalXP + XP_PER_FACT;
+    const newLevel = gamification.calculateLevel(newXP);
+
+    const updatedProgress: UserProgress = {
+      ...progress,
+      totalXP: newXP,
+      level: newLevel,
+    };
+
+    storage.setUserProgress(updatedProgress);
+
+    // Update facts streak
+    gamification.updateFactsStreak();
+    
+    // Check badges including the special "Active Awareness" badge
+    gamification.checkBadges(updatedProgress);
+
+    return XP_PER_FACT;
+  },
+
+  // Update facts reading streak
+  updateFactsStreak: (): void => {
+    const streakData = localStorage.getItem(FACTS_STREAK_KEY);
+    const today = new Date().toISOString().split('T')[0];
+    
+    let streak = { count: 0, lastDate: '' };
+    if (streakData) {
+      streak = JSON.parse(streakData);
+    }
+
+    if (streak.lastDate === today) {
+      return; // Already counted today
+    }
+
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yesterdayStr = yesterday.toISOString().split('T')[0];
+
+    if (streak.lastDate === yesterdayStr) {
+      streak.count += 1;
+    } else {
+      streak.count = 1;
+    }
+    streak.lastDate = today;
+
+    localStorage.setItem(FACTS_STREAK_KEY, JSON.stringify(streak));
+  },
+
+  // Get current facts streak
+  getFactsStreak: (): number => {
+    const streakData = localStorage.getItem(FACTS_STREAK_KEY);
+    if (!streakData) return 0;
+    
+    const streak = JSON.parse(streakData);
+    const today = new Date().toISOString().split('T')[0];
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yesterdayStr = yesterday.toISOString().split('T')[0];
+
+    // Only return streak if it's still active
+    if (streak.lastDate === today || streak.lastDate === yesterdayStr) {
+      return streak.count;
+    }
+    return 0;
+  },
+
   // Check and unlock badges
   checkBadges: (progress: UserProgress): Badge[] => {
     const badges = storage.getBadges();
     const newlyUnlocked: Badge[] = [];
+    const factsStreak = gamification.getFactsStreak();
 
     badges.forEach((badge) => {
       if (!badge.unlocked) {
@@ -97,6 +169,12 @@ export const gamification = {
             break;
           case 'level':
             shouldUnlock = progress.level >= badge.requirement;
+            break;
+          case 'special':
+            // Special badge for reading facts 7 days in a row
+            if (badge.id === 'active_awareness') {
+              shouldUnlock = factsStreak >= badge.requirement;
+            }
             break;
         }
 

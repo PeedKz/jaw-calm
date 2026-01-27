@@ -8,6 +8,7 @@ const STORAGE_KEYS = {
   BADGES: 'bruxism_badges',
   WEEKLY_CHALLENGE: 'bruxism_weekly_challenge',
   ONBOARDING_COMPLETED: 'bruxism_onboarding_completed',
+  FACTS_STREAK: 'bruxism_facts_streak',
 };
 
 export const storage = {
@@ -194,6 +195,19 @@ function getDefaultBadges(): Badge[] {
       unlocked: false,
       requirement: 500,
       type: 'total',
+    },
+    {
+      id: 'active_awareness',
+      name: 'Active Awareness',
+      nameEn: 'Active Awareness',
+      namePt: 'Consciência Ativa',
+      description: 'Read daily facts for 7 days in a row',
+      descriptionEn: 'Read daily facts for 7 days in a row',
+      descriptionPt: 'Leia curiosidades por 7 dias seguidos',
+      icon: '💡',
+      unlocked: false,
+      requirement: 7,
+      type: 'special',
     },
   ];
 }

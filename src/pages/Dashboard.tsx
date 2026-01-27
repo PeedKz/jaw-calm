@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { ProgressRing } from '@/components/ProgressRing';
 import { ExerciseCard } from '@/components/ExerciseCard';
+import { DailyFactCard } from '@/components/DailyFactCard';
 import { BottomNav } from '@/components/BottomNav';
 import { useApp } from '@/contexts/AppContext';
 import { t } from '@/lib/translations';
@@ -36,6 +37,16 @@ export default function Dashboard() {
     });
 
     setTimeout(() => setIsLogging(false), 1000);
+  };
+
+  const handleFactRead = () => {
+    // Award 5 XP for reading daily fact
+    gamification.awardFactXP();
+    
+    toast({
+      title: language === 'pt' ? '💡 Curiosidade lida!' : '💡 Fact read!',
+      description: '+5 XP',
+    });
   };
 
   const handleStartExercise = (exercise: Exercise) => {
@@ -137,11 +148,14 @@ export default function Dashboard() {
           </div>
         </motion.div>
 
+        {/* Daily Fact */}
+        <DailyFactCard language={language} onFactRead={handleFactRead} />
+
         {/* Quick Exercises */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
+          transition={{ delay: 0.3 }}
         >
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-semibold">{t('quickExercise', language)}</h2>

@@ -64,6 +64,12 @@ export const translations = {
     unlocked: 'Unlocked',
     locked: 'Locked',
     
+    // Daily Facts
+    dailyFact: 'Did you know?',
+    factRead: 'Read today',
+    gotIt: 'Got it!',
+    understood: 'Understood',
+
     // Settings
     settings: 'Settings',
     profile: 'Profile',
@@ -192,6 +198,12 @@ export const translations = {
     unlocked: 'Desbloqueado',
     locked: 'Bloqueado',
     
+    // Daily Facts
+    dailyFact: 'Você sabia?',
+    factRead: 'Lido hoje',
+    gotIt: 'Entendi!',
+    understood: 'Entendido',
+
     // Settings
     settings: 'Configurações',
     profile: 'Perfil',
