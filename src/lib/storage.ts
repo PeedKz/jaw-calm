@@ -99,6 +99,8 @@ function getDefaultReminders(): Reminder {
     vibration: true,
     silentMode: false,
     customMessages: [],
+    activeHoursStart: '07:00',
+    activeHoursEnd: '21:00',
   };
 }
 

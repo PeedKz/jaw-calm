@@ -16,6 +16,8 @@ export interface Reminder {
   vibration: boolean;
   silentMode: boolean;
   customMessages: string[];
+  activeHoursStart: string; // HH:mm format, e.g., "07:00"
+  activeHoursEnd: string;   // HH:mm format, e.g., "21:00"
 }
 
 export interface HabitEntry {

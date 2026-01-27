@@ -12,19 +12,14 @@ import Exercises from "./pages/Exercises";
 import ExerciseDetail from "./pages/ExerciseDetail";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
-import { useRelaxationPopupTrigger } from "./hooks/useRelaxationPopupTrigger";
 import { useDailyGoalCelebration } from "./hooks/useDailyGoalCelebration";
 import { useAndroidBackButton } from "./hooks/useAndroidBackButton";
 import { DailyGoalAnimation } from "./components/celebrations/DailyGoalAnimation";
-import { RelaxationReminderPopup } from "./components/notifications/RelaxationReminderPopup";
 
 const queryClient = new QueryClient();
 
 const AppRoutes = () => {
   const { isOnboardingCompleted, language } = useApp();
-  
-  // Initialize relaxation popup trigger system with urgency levels
-  const { isPopupOpen, urgencyLevel, handleDismiss, handleStartExercise } = useRelaxationPopupTrigger();
   
   // Handle daily goal celebration
   const { showCelebration, dismissCelebration } = useDailyGoalCelebration();
@@ -53,16 +48,6 @@ const AppRoutes = () => {
           </>
         )}
       </Routes>
-      
-      {/* Relaxation Reminder Popup with urgency levels */}
-      {isOnboardingCompleted && (
-        <RelaxationReminderPopup
-          isOpen={isPopupOpen}
-          urgencyLevel={urgencyLevel}
-          onDismiss={handleDismiss}
-          onStartExercise={handleStartExercise}
-        />
-      )}
       
       {/* Daily Goal Celebration Modal */}
       {isOnboardingCompleted && (
