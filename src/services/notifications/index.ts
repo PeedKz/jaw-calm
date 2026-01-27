@@ -10,3 +10,12 @@ export {
   getPendingNotifications,
   initializeNotificationListeners,
 } from './localNotifications';
+
+export {
+  scheduleNotificationsForDay,
+  cancelAllScheduledNotifications,
+  getScheduledNotifications,
+  calculateNotificationTimes,
+  calculateIntervalFromCount,
+  getScheduledTimesDisplay,
+} from './notificationScheduler';

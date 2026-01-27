@@ -3,6 +3,12 @@ import { UserProfile, Reminder, UserProgress, Badge, HabitEntry } from '@/types'
 import { storage } from '@/lib/storage';
 import { gamification } from '@/lib/gamification';
 import { Language } from '@/lib/translations';
+import { 
+  scheduleNotificationsForDay, 
+  createNotificationChannel,
+  initializeNotificationListeners,
+  checkNotificationPermission,
+} from '@/services/notifications';
 
 const LAST_RELAXATION_TIME_KEY = 'bruxism_last_relaxation_time';
 const DARK_MODE_KEY = 'bruxism_dark_mode';
@@ -28,7 +34,14 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [userProfile, setUserProfileState] = useState<UserProfile | null>(storage.getUserProfile());
-  const [reminders, setRemindersState] = useState<Reminder>(storage.getReminders());
+  const [reminders, setRemindersState] = useState<Reminder>(() => {
+    const stored = storage.getReminders();
+    // Migrate old data: ensure dailyNotificationCount exists
+    if (!stored.dailyNotificationCount) {
+      return { ...stored, dailyNotificationCount: 6 };
+    }
+    return stored;
+  });
   const [userProgress, setUserProgressState] = useState<UserProgress>(storage.getUserProgress());
   const [badges, setBadgesState] = useState<Badge[]>(storage.getBadges());
   const [language, setLanguageState] = useState<Language>(
@@ -43,6 +56,57 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     storage.isOnboardingCompleted()
   );
   const [todayCount, setTodayCount] = useState(gamification.getTodayEntries().length);
+
+  // Initialize notifications on app start
+  useEffect(() => {
+    const initializeNotifications = async () => {
+      try {
+        // Create notification channel for Android
+        await createNotificationChannel();
+        
+        // Initialize notification listeners
+        initializeNotificationListeners();
+        
+        // Check permission and schedule if enabled
+        const permission = await checkNotificationPermission();
+        if (permission === 'granted' && reminders.enabled) {
+          console.log('[AppContext] Scheduling notifications on app start');
+          await scheduleNotificationsForDay(reminders);
+        }
+      } catch (error) {
+        console.error('[AppContext] Error initializing notifications:', error);
+      }
+    };
+
+    if (isOnboardingCompleted) {
+      initializeNotifications();
+    }
+  }, [isOnboardingCompleted]);
+
+  // Reschedule notifications at midnight
+  useEffect(() => {
+    const scheduleAtMidnight = () => {
+      const now = new Date();
+      const tomorrow = new Date(now);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      tomorrow.setHours(0, 1, 0, 0); // 00:01 to avoid edge cases
+      const msUntilMidnight = tomorrow.getTime() - now.getTime();
+
+      const timer = setTimeout(async () => {
+        if (reminders.enabled) {
+          console.log('[AppContext] Rescheduling notifications for new day');
+          await scheduleNotificationsForDay(reminders);
+        }
+        // Recursively schedule for next midnight
+        scheduleAtMidnight();
+      }, msUntilMidnight);
+
+      return timer;
+    };
+
+    const timer = scheduleAtMidnight();
+    return () => clearTimeout(timer);
+  }, [reminders]);
 
   // Apply dark mode class to document
   useEffect(() => {

@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { useApp } from '@/contexts/AppContext';
 import { t } from '@/lib/translations';
-import { Settings as SettingsIcon, Bell, Globe, Info, RotateCcw, Moon } from 'lucide-react';
+import { Settings as SettingsIcon, Bell, Globe, Info, RotateCcw, Moon, Clock } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import {
   AlertDialog,
@@ -18,14 +18,16 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { useNavigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { toast } from 'sonner';
 import {
   checkNotificationPermission,
   requestNotificationPermission,
-  cancelReminderNotifications,
+  cancelAllScheduledNotifications,
+  scheduleNotificationsForDay,
+  getScheduledTimesDisplay,
+  calculateIntervalFromCount,
 } from '@/services/notifications';
-import { getReminderScheduleDescription } from '@/lib/reminderCalculator';
 
 export default function Settings() {
   const { language, setLanguage, reminders, setReminders, darkMode, setDarkMode, userProfile } = useApp();
@@ -41,42 +43,103 @@ export default function Settings() {
     checkPermission();
   }, []);
 
+  // Calculate scheduled times for display
+  const scheduledTimes = useMemo(() => {
+    if (!reminders.enabled) return [];
+    return getScheduledTimesDisplay(reminders);
+  }, [reminders.activeHoursStart, reminders.activeHoursEnd, reminders.dailyNotificationCount, reminders.enabled]);
+
+  // Calculate interval for display
+  const intervalMinutes = useMemo(() => {
+    return calculateIntervalFromCount(
+      reminders.activeHoursStart,
+      reminders.activeHoursEnd,
+      reminders.dailyNotificationCount
+    );
+  }, [reminders.activeHoursStart, reminders.activeHoursEnd, reminders.dailyNotificationCount]);
+
   const handleNotificationToggle = async (enabled: boolean) => {
     if (enabled) {
       const granted = await requestNotificationPermission();
       if (granted) {
-        setReminders({ ...reminders, enabled: true });
+        const newReminders = { ...reminders, enabled: true };
+        setReminders(newReminders);
         setNotificationPermission('granted');
+        
+        // Schedule notifications
+        await scheduleNotificationsForDay(newReminders);
         toast.success(language === 'pt' ? 'Notificações ativadas!' : 'Notifications enabled!');
       } else {
         setNotificationPermission('denied');
       }
     } else {
-      await cancelReminderNotifications();
+      await cancelAllScheduledNotifications();
       setReminders({ ...reminders, enabled: false });
       toast.info(language === 'pt' ? 'Notificações desativadas' : 'Notifications disabled');
     }
   };
 
-  const handleFrequencyChange = (value: string) => {
-    setReminders({ ...reminders, frequency: parseInt(value, 10) });
+  const handleNotificationCountChange = async (value: string) => {
+    const count = parseInt(value, 10);
+    const interval = calculateIntervalFromCount(
+      reminders.activeHoursStart,
+      reminders.activeHoursEnd,
+      count
+    );
+    const newReminders = { ...reminders, dailyNotificationCount: count, frequency: interval };
+    setReminders(newReminders);
+    
+    // Reschedule notifications
+    if (reminders.enabled) {
+      await scheduleNotificationsForDay(newReminders);
+      toast.success(
+        language === 'pt' 
+          ? `${count} notificações agendadas para hoje` 
+          : `${count} notifications scheduled for today`
+      );
+    }
+  };
+
+  const handleActiveHoursChange = async (field: 'activeHoursStart' | 'activeHoursEnd', value: string) => {
+    const newReminders = { ...reminders, [field]: value };
+    const interval = calculateIntervalFromCount(
+      newReminders.activeHoursStart,
+      newReminders.activeHoursEnd,
+      newReminders.dailyNotificationCount
+    );
+    newReminders.frequency = interval;
+    setReminders(newReminders);
+    
+    // Reschedule notifications
+    if (reminders.enabled) {
+      await scheduleNotificationsForDay(newReminders);
+    }
   };
 
   const handleResetOnboarding = () => {
-    // Clear only the onboarding completion flag
     localStorage.removeItem('bruxism_onboarding_completed');
-    // Navigate to onboarding
     navigate('/onboarding');
   };
 
-  const intervalOptions = [
-    { value: '15', label: t('interval15', language) },
-    { value: '30', label: t('interval30', language) },
-    { value: '45', label: t('interval45', language) },
-    { value: '60', label: t('interval60', language) },
-    { value: '90', label: t('interval90', language) },
-    { value: '120', label: t('interval120', language) },
+  const notificationCountOptions = [
+    { value: '4', label: '4' },
+    { value: '6', label: '6' },
+    { value: '8', label: '8' },
+    { value: '10', label: '10' },
+    { value: '12', label: '12' },
   ];
+
+  const formatInterval = (minutes: number): string => {
+    if (minutes >= 60) {
+      const hours = Math.floor(minutes / 60);
+      const mins = minutes % 60;
+      if (language === 'pt') {
+        return mins > 0 ? `${hours}h ${mins}min` : `${hours}h`;
+      }
+      return mins > 0 ? `${hours}h ${mins}m` : `${hours}h`;
+    }
+    return `${minutes} ${language === 'pt' ? 'min' : 'min'}`;
+  };
 
   return (
     <div className="min-h-screen bg-background pb-24">
@@ -140,7 +203,7 @@ export default function Settings() {
           </div>
         </motion.div>
 
-        {/* Reminders */}
+        {/* Notifications */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -157,7 +220,7 @@ export default function Settings() {
             <div className="flex items-center justify-between">
               <div>
                 <span className="text-sm font-medium">
-                  {language === 'pt' ? 'Ativar lembretes (Notificações)' : 'Enable reminders (Notifications)'}
+                  {language === 'pt' ? 'Ativar notificações push' : 'Enable push notifications'}
                 </span>
                 {notificationPermission === 'denied' && (
                   <p className="text-xs text-destructive mt-1">
@@ -172,6 +235,39 @@ export default function Settings() {
                 onCheckedChange={handleNotificationToggle}
                 disabled={notificationPermission === 'denied'}
               />
+            </div>
+
+            {/* Notification Count */}
+            <div>
+              <label className="text-sm text-muted-foreground block mb-2">
+                {t('notificationCountLabel', language)}
+              </label>
+              <p className="text-xs text-muted-foreground mb-3">
+                {t('notificationCountDesc', language)}
+              </p>
+              <Select
+                value={reminders.dailyNotificationCount?.toString() || '6'}
+                onValueChange={handleNotificationCountChange}
+                disabled={!reminders.enabled}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {notificationCountOptions.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label} {t('notificationsPerDay', language)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {reminders.enabled && (
+                <p className="text-xs text-muted-foreground mt-2">
+                  {language === 'pt' 
+                    ? `Intervalo: ~${formatInterval(intervalMinutes)}` 
+                    : `Interval: ~${formatInterval(intervalMinutes)}`}
+                </p>
+              )}
             </div>
 
             {/* Active Hours */}
@@ -189,8 +285,8 @@ export default function Settings() {
                   </label>
                   <input
                     type="time"
-                    value={reminders.activeHoursStart || '07:00'}
-                    onChange={(e) => setReminders({ ...reminders, activeHoursStart: e.target.value })}
+                    value={reminders.activeHoursStart || '09:00'}
+                    onChange={(e) => handleActiveHoursChange('activeHoursStart', e.target.value)}
                     disabled={!reminders.enabled}
                     className="w-full px-3 py-2 rounded-lg border border-input bg-background text-foreground text-sm"
                   />
@@ -202,7 +298,7 @@ export default function Settings() {
                   <input
                     type="time"
                     value={reminders.activeHoursEnd || '21:00'}
-                    onChange={(e) => setReminders({ ...reminders, activeHoursEnd: e.target.value })}
+                    onChange={(e) => handleActiveHoursChange('activeHoursEnd', e.target.value)}
                     disabled={!reminders.enabled}
                     className="w-full px-3 py-2 rounded-lg border border-input bg-background text-foreground text-sm"
                   />
@@ -210,38 +306,25 @@ export default function Settings() {
               </div>
             </div>
 
-            {/* Reminder Interval */}
-            <div>
-              <label className="text-sm text-muted-foreground block mb-2">
-                {t('intervalLabel', language)}
-              </label>
-              <Select
-                value={reminders.frequency.toString()}
-                onValueChange={handleFrequencyChange}
-                disabled={!reminders.enabled}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {intervalOptions.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
-                      {option.label}
-                    </SelectItem>
+            {/* Scheduled Times Display */}
+            {reminders.enabled && scheduledTimes.length > 0 && (
+              <div className="bg-muted/50 rounded-lg p-4">
+                <div className="flex items-center gap-2 mb-3">
+                  <Clock className="w-4 h-4 text-primary" />
+                  <span className="text-sm font-medium">{t('scheduledTimes', language)}</span>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {scheduledTimes.map((time, index) => (
+                    <span
+                      key={index}
+                      className="px-2 py-1 bg-primary/10 text-primary text-xs rounded-full font-medium"
+                    >
+                      {time}
+                    </span>
                   ))}
-                </SelectContent>
-              </Select>
-              <p className="text-xs text-muted-foreground mt-2">
-                {getReminderScheduleDescription(reminders.frequency, language)}
-                {userProfile && (
-                  <span className="block mt-1">
-                    {language === 'pt' 
-                      ? `Meta diária: ${userProfile.dailyGoal} relaxamentos` 
-                      : `Daily goal: ${userProfile.dailyGoal} relaxations`}
-                  </span>
-                )}
-              </p>
-            </div>
+                </div>
+              </div>
+            )}
 
             {/* Sound Toggle */}
             <div className="flex items-center justify-between">
@@ -316,8 +399,8 @@ export default function Settings() {
           </div>
           <p className="text-sm text-muted-foreground leading-relaxed">
             {language === 'pt'
-              ? 'Desencostaê ajuda você a lembrar de relaxar a mandíbula e soltar os dentes através de lembretes inteligentes, exercícios e gamificação.'
-              : 'Desencostaê helps you remember to relax your jaw and unclench your teeth through smart reminders, exercises, and gamification.'}
+              ? 'Desencosta ajuda você a lembrar de relaxar a mandíbula e soltar os dentes através de lembretes inteligentes, exercícios e gamificação.'
+              : 'Desencosta helps you remember to relax your jaw and unclench your teeth through smart reminders, exercises, and gamification.'}
           </p>
           <p className="text-xs text-muted-foreground mt-4">Version 1.0.0</p>
         </motion.div>
