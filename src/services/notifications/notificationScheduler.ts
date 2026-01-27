@@ -34,8 +34,13 @@ interface ScheduledNotification {
 /**
  * Parse time string (HH:mm) to hours and minutes
  */
-function parseTime(timeStr: string): { hours: number; minutes: number } {
-  const [hours, minutes] = timeStr.split(':').map(Number);
+function parseTime(timeStr: string | undefined): { hours: number; minutes: number } {
+  if (!timeStr) {
+    return { hours: 9, minutes: 0 }; // Default to 09:00
+  }
+  const parts = timeStr.split(':');
+  const hours = parseInt(parts[0], 10) || 9;
+  const minutes = parseInt(parts[1], 10) || 0;
   return { hours, minutes };
 }
 
@@ -43,8 +48,8 @@ function parseTime(timeStr: string): { hours: number; minutes: number } {
  * Calculate notification times for today based on settings
  */
 export function calculateNotificationTimes(
-  startTime: string,
-  endTime: string,
+  startTime: string | undefined,
+  endTime: string | undefined,
   count: number
 ): Date[] {
   const now = new Date();
@@ -217,8 +222,8 @@ export function getScheduledNotifications(): ScheduledNotification[] {
  * Calculate the interval in minutes based on active hours and notification count
  */
 export function calculateIntervalFromCount(
-  startTime: string,
-  endTime: string,
+  startTime: string | undefined,
+  endTime: string | undefined,
   count: number
 ): number {
   const start = parseTime(startTime);
@@ -240,11 +245,11 @@ export function calculateIntervalFromCount(
  * Format scheduled times for display
  */
 export function getScheduledTimesDisplay(reminders: Reminder): string[] {
-  const times = calculateNotificationTimes(
-    reminders.activeHoursStart,
-    reminders.activeHoursEnd,
-    reminders.dailyNotificationCount
-  );
+  const startTime = reminders.activeHoursStart || '09:00';
+  const endTime = reminders.activeHoursEnd || '21:00';
+  const count = reminders.dailyNotificationCount || 6;
+  
+  const times = calculateNotificationTimes(startTime, endTime, count);
   
   // Also calculate times that have already passed today
   const now = new Date();
