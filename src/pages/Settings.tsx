@@ -174,6 +174,42 @@ export default function Settings() {
               />
             </div>
 
+            {/* Active Hours */}
+            <div>
+              <label className="text-sm text-muted-foreground block mb-2">
+                {t('activeHoursLabel', language)}
+              </label>
+              <p className="text-xs text-muted-foreground mb-3">
+                {t('activeHoursDesc', language)}
+              </p>
+              <div className="flex items-center gap-3">
+                <div className="flex-1">
+                  <label className="text-xs text-muted-foreground block mb-1">
+                    {t('activeHoursStart', language)}
+                  </label>
+                  <input
+                    type="time"
+                    value={reminders.activeHoursStart || '07:00'}
+                    onChange={(e) => setReminders({ ...reminders, activeHoursStart: e.target.value })}
+                    disabled={!reminders.enabled}
+                    className="w-full px-3 py-2 rounded-lg border border-input bg-background text-foreground text-sm"
+                  />
+                </div>
+                <div className="flex-1">
+                  <label className="text-xs text-muted-foreground block mb-1">
+                    {t('activeHoursEnd', language)}
+                  </label>
+                  <input
+                    type="time"
+                    value={reminders.activeHoursEnd || '21:00'}
+                    onChange={(e) => setReminders({ ...reminders, activeHoursEnd: e.target.value })}
+                    disabled={!reminders.enabled}
+                    className="w-full px-3 py-2 rounded-lg border border-input bg-background text-foreground text-sm"
+                  />
+                </div>
+              </div>
+            </div>
+
             {/* Reminder Interval */}
             <div>
               <label className="text-sm text-muted-foreground block mb-2">
@@ -223,18 +259,6 @@ export default function Settings() {
               <Switch
                 checked={reminders.vibration}
                 onCheckedChange={(checked) => setReminders({ ...reminders, vibration: checked })}
-                disabled={!reminders.enabled}
-              />
-            </div>
-
-            {/* Silent Mode Toggle */}
-            <div className="flex items-center justify-between">
-              <span className="text-sm">{t('silentMode', language)}</span>
-              <Switch
-                checked={reminders.silentMode}
-                onCheckedChange={(checked) =>
-                  setReminders({ ...reminders, silentMode: checked })
-                }
                 disabled={!reminders.enabled}
               />
             </div>

@@ -105,6 +105,12 @@ export const translations = {
     interval90: '90 minutes',
     interval120: '2 hours',
     
+    // Active hours
+    activeHoursLabel: 'Active Hours',
+    activeHoursDesc: 'Set when you want to receive reminders',
+    activeHoursStart: 'Start',
+    activeHoursEnd: 'End',
+    
     // Daily goal celebration
     dailyGoalComplete: 'Daily Protocol Complete',
     dailyGoalMessage: 'Session concluded. Maintain your healthy routine.',
@@ -226,6 +232,12 @@ export const translations = {
     interval60: '1 hora',
     interval90: '90 minutos',
     interval120: '2 horas',
+    
+    // Active hours
+    activeHoursLabel: 'Horário Ativo',
+    activeHoursDesc: 'Defina quando deseja receber lembretes',
+    activeHoursStart: 'Início',
+    activeHoursEnd: 'Fim',
     
     // Daily goal celebration
     dailyGoalComplete: 'Protocolo Diário Concluído',
