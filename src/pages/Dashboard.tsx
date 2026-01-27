@@ -15,12 +15,12 @@ import { Exercise } from '@/types';
 import { useToast } from '@/hooks/use-toast';
 
 export default function Dashboard() {
-  const { language, userProfile, userProgress, todayCount, logRelaxation } = useApp();
+  const { language, userProgress, todayCount, logRelaxation, reminders } = useApp();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [isLogging, setIsLogging] = useState(false);
 
-  const dailyGoal = userProfile?.dailyGoal || 6;
+  const dailyGoal = reminders.dailyNotificationCount || 6;
   const progressPercent = Math.min((todayCount / dailyGoal) * 100, 100);
   const levelProgress = gamification.getLevelProgress(userProgress.totalXP);
 
