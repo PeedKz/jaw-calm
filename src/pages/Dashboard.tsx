@@ -8,7 +8,7 @@ import { useApp } from '@/contexts/AppContext';
 import { t } from '@/lib/translations';
 import { gamification } from '@/lib/gamification';
 import { exercises } from '@/lib/exercises';
-import { Flame, Zap, Sparkles } from 'lucide-react';
+import { Flame, Zap, Sparkles, Info } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { Exercise } from '@/types';
@@ -77,6 +77,44 @@ export default function Dashboard() {
       </div>
 
       <div className="px-6 -mt-8 space-y-6">
+        {/* How it works */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="card-soft bg-gradient-to-br from-primary/5 to-secondary/5 border border-primary/10"
+        >
+          <h2 className="text-lg font-semibold mb-3 flex items-center gap-2">
+            <Info className="w-5 h-5 text-primary" />
+            {language === 'pt' ? 'Como funciona' : 'How it works'}
+          </h2>
+          <div className="space-y-2 text-sm text-muted-foreground">
+            <p>
+              <span className="font-medium text-foreground">
+                {language === 'pt' ? '📊 Progresso:' : '📊 Progress:'}
+              </span>{' '}
+              {language === 'pt'
+                ? 'Mostra quantas vezes você desencostou os dentes hoje.'
+                : 'Shows how many times you unclenched your teeth today.'}
+            </p>
+            <p>
+              <span className="font-medium text-foreground">
+                {language === 'pt' ? '⚡ XP:' : '⚡ XP:'}
+              </span>{' '}
+              {language === 'pt'
+                ? 'Pontos que você ganha ao registrar relaxamentos e interagir com o app.'
+                : 'Points you earn by logging relaxations and interacting with the app.'}
+            </p>
+            <p>
+              <span className="font-medium text-foreground">
+                {language === 'pt' ? '🔔 Alertas:' : '🔔 Alerts:'}
+              </span>{' '}
+              {language === 'pt'
+                ? 'Configure quantos lembretes quer receber e em qual período do dia nas Configurações.'
+                : 'Set how many reminders you want and when to receive them in Settings.'}
+            </p>
+          </div>
+        </motion.div>
+
         {/* Today's Progress */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
