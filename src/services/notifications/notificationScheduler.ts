@@ -70,16 +70,22 @@ export function calculateNotificationTimes(
   }
   
   const totalMinutes = (endDate.getTime() - startDate.getTime()) / (1000 * 60);
-  const intervalMinutes = Math.floor(totalMinutes / count);
+  
+  // Distribute notifications evenly across the period
+  // Use (count - 1) intervals to include both start and distribute evenly
+  const intervalMinutes = count > 1 ? Math.floor(totalMinutes / (count - 1)) : totalMinutes;
   
   const times: Date[] = [];
   
   for (let i = 0; i < count; i++) {
     const notificationTime = new Date(startDate.getTime() + (i * intervalMinutes * 60 * 1000));
     
-    // Only add future notifications
-    if (notificationTime > now) {
-      times.push(notificationTime);
+    // Make sure we don't go past end time
+    if (notificationTime <= endDate) {
+      // Only add future notifications
+      if (notificationTime > now) {
+        times.push(notificationTime);
+      }
     }
   }
   
@@ -269,12 +275,18 @@ export function getScheduledTimesDisplay(reminders: Reminder): string[] {
   }
   
   const totalMinutes = (endDate.getTime() - startDate.getTime()) / (1000 * 60);
-  const intervalMinutes = Math.floor(totalMinutes / reminders.dailyNotificationCount);
+  const notificationCount = reminders.dailyNotificationCount || 6;
+  
+  // Use (count - 1) intervals to distribute evenly from start to end
+  const intervalMinutes = notificationCount > 1 ? Math.floor(totalMinutes / (notificationCount - 1)) : totalMinutes;
   
   const allTimes: string[] = [];
-  for (let i = 0; i < reminders.dailyNotificationCount; i++) {
+  for (let i = 0; i < notificationCount; i++) {
     const notificationTime = new Date(startDate.getTime() + (i * intervalMinutes * 60 * 1000));
-    allTimes.push(notificationTime.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }));
+    // Make sure we don't go past end time
+    if (notificationTime <= endDate) {
+      allTimes.push(notificationTime.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }));
+    }
   }
   
   return allTimes;
