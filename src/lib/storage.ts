@@ -95,12 +95,13 @@ function getDefaultReminders(): Reminder {
   return {
     id: 'default',
     enabled: true,
-    frequency: 120, // 2 hours
+    frequency: 120, // calculated automatically
+    dailyNotificationCount: 6, // default 6 notifications per day
     sound: true,
     vibration: true,
     silentMode: false,
     customMessages: [],
-    activeHoursStart: '07:00',
+    activeHoursStart: '09:00',
     activeHoursEnd: '21:00',
   };
 }

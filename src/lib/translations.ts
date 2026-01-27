@@ -117,6 +117,15 @@ export const translations = {
     activeHoursStart: 'Start',
     activeHoursEnd: 'End',
     
+    // Notification count
+    notificationCountLabel: 'Notifications per Day',
+    notificationCountDesc: 'How many reminders do you want?',
+    notificationsPerDay: 'notifications',
+    scheduledTimes: 'Scheduled times',
+    nextNotification: 'Next notification',
+    noNotificationsToday: 'No more notifications today',
+    notificationsScheduled: 'notifications scheduled for today',
+    
     // Daily goal celebration
     dailyGoalComplete: 'Daily Protocol Complete',
     dailyGoalMessage: 'Session concluded. Maintain your healthy routine.',
@@ -250,6 +259,15 @@ export const translations = {
     activeHoursDesc: 'Defina quando deseja receber lembretes',
     activeHoursStart: 'Início',
     activeHoursEnd: 'Fim',
+    
+    // Notification count
+    notificationCountLabel: 'Notificações por Dia',
+    notificationCountDesc: 'Quantos lembretes você quer receber?',
+    notificationsPerDay: 'notificações',
+    scheduledTimes: 'Horários agendados',
+    nextNotification: 'Próxima notificação',
+    noNotificationsToday: 'Sem mais notificações hoje',
+    notificationsScheduled: 'notificações agendadas para hoje',
     
     // Daily goal celebration
     dailyGoalComplete: 'Protocolo Diário Concluído',

@@ -11,7 +11,8 @@ export interface UserProfile {
 export interface Reminder {
   id: string;
   enabled: boolean;
-  frequency: number; // minutes between reminders
+  frequency: number; // minutes between reminders (calculated automatically)
+  dailyNotificationCount: number; // number of notifications per day (4, 6, 8, 10, 12)
   sound: boolean;
   vibration: boolean;
   silentMode: boolean;
