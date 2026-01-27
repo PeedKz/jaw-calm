@@ -244,7 +244,8 @@ export function calculateIntervalFromCount(
   }
   
   const totalMinutes = endMinutes - startMinutes;
-  return Math.floor(totalMinutes / count);
+  // Use (count - 1) intervals for even distribution from start to end
+  return count > 1 ? Math.floor(totalMinutes / (count - 1)) : totalMinutes;
 }
 
 /**
