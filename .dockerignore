@@ -1,0 +1,25 @@
+# Dependências - serão instaladas dentro do container
+node_modules/
+
+# Pastas de build
+dist/
+android/
+ios/
+
+# Output do Docker
+output/
+
+# Git
+.git/
+.gitignore
+
+# Arquivos de desenvolvimento
+*.log
+*.md
+.env*
+.vscode/
+.idea/
+
+# Cache
+.cache/
+.npm/
