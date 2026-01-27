@@ -11,9 +11,13 @@ RUN apt-get update && apt-get install -y \
     curl \
     git \
     unzip \
-    openjdk-17-jdk \
+    openjdk-21-jdk \
     wget \
     && rm -rf /var/lib/apt/lists/*
+
+# Configurar JAVA_HOME para Java 21
+ENV JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
+ENV PATH="${JAVA_HOME}/bin:${PATH}"
 
 # Instalar Node.js 22 (necessário para Capacitor CLI 8.x)
 RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
