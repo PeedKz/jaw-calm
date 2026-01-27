@@ -1,8 +1,8 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'app.lovable.201a04a3125e42078ddd24b78dbf5673',
-  appName: 'JawRelax',
+  appId: 'com.desencostae.app',
+  appName: 'Desencostaê',
   webDir: 'dist',
   server: {
     // For development with hot-reload, uncomment below:
